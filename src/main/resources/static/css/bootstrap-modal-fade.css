@@ -1,0 +1,19 @@
+.modal.fade.show .modal-dialog {
+    transform: translate(0, 0);
+}
+
+.modal.fade:not(.show).top .modal-dialog {
+    transform: translate(0, -100%);
+}
+
+.modal.fade:not(.show).bottom .modal-dialog {
+    transform: translate(0, 100%);
+}
+
+.modal.fade:not(.show).left .modal-dialog {
+    transform: translate(-100%, 0);
+}
+
+.modal.fade:not(.show).right .modal-dialog {
+    transform: translate(100%, 0);
+}

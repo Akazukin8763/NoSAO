@@ -1,5 +1,8 @@
 package nosao.entity;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "character")
 public class Character {
     private String id;
     private String name;

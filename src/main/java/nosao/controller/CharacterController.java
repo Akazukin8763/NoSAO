@@ -47,7 +47,7 @@ public class CharacterController {
     @PutMapping("/{id}")
     public ResponseEntity<Character> replaceCharacter(
             @PathVariable("id") String id, @RequestBody Character request) {
-        Character character = characterService.replaceProduct(id, request);
+        Character character = characterService.replaceCharacter(id, request);
         return ResponseEntity.ok(character);
     }
 

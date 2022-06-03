@@ -107,7 +107,7 @@
 
                 getEquipments(__name).then(function(response) {
                     if (response.success) {
-                        let equipment = response.data;
+                        let equipments = response.data;
 
                         let helmet = $("#armorHelmet");
                         let chestplate = $("#armorChestplate");
@@ -125,32 +125,32 @@
 
                         let cardHelmet = $('<div class="card-image"></div>');
                         $('<img src="src/image/Main-Guild.png" class="card-img-top" style="height: 20.7vh;">').appendTo(cardHelmet);
-                        $('<div><h5>' + (equipment.armor.helmet == '' ? '(No Helmet)' : equipment.armor.helmet) + '</h5></div>').appendTo(cardHelmet);
+                        $('<div><h5>' + (equipments.armor.helmet == '' ? '(No Helmet)' : equipments.armor.helmet) + '</h5></div>').appendTo(cardHelmet);
                         cardHelmet.appendTo(helmet);
 
                         let cardChestplate = $('<div class="card-image"></div>');
                         $('<img src="src/image/Main-Guild.png" class="card-img-top" style="height: 20.7vh;">').appendTo(cardChestplate);
-                        $('<div><h5>' + (equipment.armor.chestplate == '' ? '(No Chestplate)' : equipment.armor.chestplate) + '</h5></div>').appendTo(cardChestplate);
+                        $('<div><h5>' + (equipments.armor.chestplate == '' ? '(No Chestplate)' : equipments.armor.chestplate) + '</h5></div>').appendTo(cardChestplate);
                         cardChestplate.appendTo(chestplate);
 
                         let cardVambrace = $('<div class="card-image"></div>');
                         $('<img src="src/image/Main-Guild.png" class="card-img-top" style="height: 20.7vh;">').appendTo(cardVambrace);
-                        $('<div><h5>' + (equipment.armor.vambrace == '' ? '(No Vambrace)' : equipment.armor.vambrace) + '</h5></div>').appendTo(cardVambrace);
+                        $('<div><h5>' + (equipments.armor.vambrace == '' ? '(No Vambrace)' : equipments.armor.vambrace) + '</h5></div>').appendTo(cardVambrace);
                         cardVambrace.appendTo(vambrace);
 
                         let cardCuish = $('<div class="card-image"></div>');
                         $('<img src="src/image/Main-Guild.png" class="card-img-top" style="height: 20.7vh;">').appendTo(cardCuish);
-                        $('<div><h5>' + (equipment.armor.cuish == '' ? '(No Cuish)' : equipment.armor.cuish) + '</h5></div>').appendTo(cardCuish);
+                        $('<div><h5>' + (equipments.armor.cuish == '' ? '(No Cuish)' : equipments.armor.cuish) + '</h5></div>').appendTo(cardCuish);
                         cardCuish.appendTo(cuish);
 
                         let cardMain = $('<div class="card-image"></div>');
                         $('<img src="src/image/Main-Guild.png" class="card-img-top" style="height: 20.7vh;">').appendTo(cardMain);
-                        $('<div><h5>' + (equipment.weapon.main == '' ? '(No Main)' : equipment.weapon.main) + '</h5></div>').appendTo(cardMain);
+                        $('<div><h5>' + (equipments.weapon.main == '' ? '(No Main)' : equipments.weapon.main) + '</h5></div>').appendTo(cardMain);
                         cardMain.appendTo(main);
 
                         let cardSub = $('<div class="card-image"></div>');
                         $('<img src="src/image/Main-Guild.png" class="card-img-top" style="height: 20.7vh;">').appendTo(cardSub);
-                        $('<div><h5>' + (equipment.weapon.sub == '' ? '(No Sub)' : equipment.weapon.sub) + '</h5></div>').appendTo(cardSub);
+                        $('<div><h5>' + (equipments.weapon.sub == '' ? '(No Sub)' : equipments.weapon.sub) + '</h5></div>').appendTo(cardSub);
                         cardSub.appendTo(sub);
                     }
                     else {

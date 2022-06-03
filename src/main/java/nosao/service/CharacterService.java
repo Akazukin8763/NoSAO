@@ -17,17 +17,24 @@ public class CharacterService {
     @Autowired
     private CharacterRepository repository;
 
-//    public Character getCharacter(String id) {
-//        return repository.findById(id)
-//                .orElseThrow(() -> new NotFoundException("Can't find character."));
-//    }
-//
 //    public List<Character> getCharacters(CharacterQueryParameter param) {
 //        return repository.findAll();
 //    }
 
+    public Character getCharacterById(String id) {
+        return repository._findById(id);
+    }
+
     public Character getCharacterByName(String name) {
         return repository.findByName(name);
+    }
+
+    public Character getCharacterDescriptionByName(String name) {
+        return repository.findByNameIncludeDescription(name);
+    }
+
+    public Character getCharacterAbilityByName(String name) {
+        return repository.findByNameIncludeAbility(name);
     }
 
 //    public Character createCharacter(Character request) {
@@ -37,18 +44,15 @@ public class CharacterService {
 //
 //        return repository.insert(character);
 //    }
-//
-//    public Character replaceCharacter(String id, Character request) {
-//        Character oldCharacter = getCharacter(id);
-//
-//        Character character = new Character();
-//        character.setId(oldCharacter.getId());
-//        character.setName(request.getName());
-//        character.setDescription(request.getDescription());
-//
-//        return repository.save(character);
-//    }
-//
+
+    public Character updateCharacter(String id, String description) {
+        Character character = getCharacterById(id);
+
+        character.setDescription(description);
+
+        return repository.save(character);
+    }
+
 //    public void deleteCharacter(String id) {
 //        repository.deleteById(id);
 //    }

@@ -15,10 +15,10 @@ public class MockCharacterDAO {
 
     @PostConstruct
     private void initDB() {
-        charactersDB.add(new Character("0001","奧伯龍", "精靈王",
-                null, null, null, null,
-                null, null,
-                1719, 76, 39, 127, 67));
+//        charactersDB.add(new Character("0001","奧伯龍", "精靈王",
+//                null, null, null, null,
+//                null, null,
+//                1719, 76, 39, 127, 67));
 
     }
 

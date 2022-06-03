@@ -1,19 +1,3 @@
-<?php
-    session_start();
-
-    if (isset($_SESSION["ID"])) {
-        $ID = $_SESSION["ID"];
-        $username = $_SESSION["username"];
-
-        setcookie("ID", $ID);
-        setcookie("username", $username);
-    }
-    else {
-        header('location: index.php');
-        exit;
-    }
-?>
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -29,7 +13,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <title>MySAO</title>
+        <title>NoSAO</title>
 
         <style>
             .Aincrad {
@@ -91,76 +75,55 @@
 
         <script type="module">
             import { getCookie } from "./js/cookie.js";
-            import * as ajax from "./js/ajax.js";
 
-            let __level = 1; // Default
-            let __ID = getCookie("ID");
-            let __name = getCookie("username");
+            let __id = getCookie("id");
+            let __name = getCookie("name");
 
-            // Ability, Guild
-            import * as ability from "./js/ability/showGraph.js";
-            import * as guild from "./js/guild/showGraph.js";
+            // Ability, Description
+            import { showAbilityGraph } from "./js/graph/showGraph.js";
+            import { getAbility, getDescription } from "./ajax/status/characterInfo.js"
             function setStatus() {
-                ajax.ajax_searchPlayer(__name).then(function(response) {
-                    if (response.message.successed) {
-                        let playerInfo = response.playerInfo;
+                getAbility(__name).then(function(response) {
+                    if (response.first.success) {
+                        let ability = response.second;
 
                         // Ability
-                        let attack = playerInfo.attack;
-                        let health = playerInfo.health;
-                        let defense = playerInfo.defense;
-                        let reaction = playerInfo.reaction;
-                        let agile = playerInfo.agile;
+                        let attack = ability.attack;
+                        let health = ability.health;
+                        let defense = ability.defense;
+                        let reaction = ability.reaction;
+                        let agile = ability.agile;
                         
-                        ability.showGraph($("#abilityChart"), attack, health, defense, reaction, agile);
+                        showAbilityGraph($("#abilityChart"), attack, health, defense, reaction, agile);
                         $("#attack").html(attack);
                         $("#health").html(health);
                         $("#defense").html(defense);
                         $("#reaction").html(reaction);
                         $("#agile").html(agile);
-
-                        // Description
-                        let description = playerInfo.description;
-
-                        $("#descriptionArea").html(description);
-
-                        // Aincrad
-                        __level = playerInfo.levels;
-
-                        setLevel(__level);
-
-                        // Guild
-                        let __guild_name = playerInfo.guild_name;
-
-                        ajax.ajax_getGuildDetail(__guild_name).then(function(response) {
-                            if (response.message.successed) {
-                                let detail = new Map();
-
-                                response.memberDistribution.forEach(function(element) {
-                                    detail.set(element.lv, element.num);
-                                });
-
-                                $("#guildName").html(__guild_name);
-                                guild.showGraph($("#guildChart"), [...detail.keys()], [...detail.values()]);
-                            }
-                            else { // 沒有公會則只顯示自己
-                                $("#guildName").html("[None]");
-                                guild.showGraph($("#guildChart"), [__level], [1]);
-                            }
-                        }).catch(function(jqXHR) { // 錯誤則只顯示自己
-                            $("#guildName").html("[None]");
-                            guild.showGraph($("#guildChart"), [__level], [1]);
-                        });
                     }
                     else {
-                        location.href = "main.php";
+                        location.href = "main.html";
                     }
                 }).catch(function(jqXHR) {
-                    location.href = "main.php";
+                    location.href = "main.html";
+                });
+
+                getDescription(__name).then(function(response) {
+                    if (response.first.success) {
+                        let description = response.second;
+
+                        $("#descriptionArea").html(description);
+                    }
+                    else {
+                        location.href = "main.html";
+                    }
+                }).catch(function(jqXHR) {
+                    location.href = "main.html";
                 });
             }
 
             // Description Update
+            import { updateDescription } from "./ajax/status/updateCharacter.js"
             $("#descriptionArea").parent().dblclick(function() {
                 $("#descriptionArea").prop('disabled', false);
                 $("#descriptionArea").focus();
@@ -170,58 +133,25 @@
                 $("#descriptionArea").prop('disabled', true);
 
                 let __description = $("#descriptionArea").val();
-                ajax.ajax_updatePlayer_description(__description).then(function(response) {
-                    if (response.message.successed) {
+                updateDescription(__id, __description).then(function(response) {
+                    if (response.success) {
                         // Nothing
                     }
                     else {
-                        $("#descriptionERR").html(response.message.statement);
+                        $("#descriptionERR").html(response.message);
                     }
                 }).catch(function(jqXHR) {
                     $("#descriptionERR").html("伺服器連線錯誤。");
                 });
             })
 
-            // Level Selector
-            // https://codepen.io/Alca/pen/BZbPrE
-            let size = 42; // font size (px)
-            let classList = [ 'visible', 'close', 'far', 'far', 'distant', 'distant' ];
-
-            $("#moreAincrad").click(function() {
-                location.href = "aincrad.php?index=" + Math.floor((__level - 1) / 10);
-            });
-            $("#aincradLevelPrev").click(function() {
-                __level = (__level + 98) % 100 + 1;
-                setLevel(__level);
-            });
-            $("#aincradLevelNext").click(function() {
-                __level = __level % 100 + 1;
-                setLevel(__level);
-            });
-            function setLevel(__level) {
-                let columns = [...document.getElementsByClassName('column')];
-                let num = ("000" + __level).slice(-3);
-
-                columns.forEach((ele, i) => {
-                    let n = +num[i];
-                    let offset = -n * size;
-                    ele.style.transform = 'translateY(calc(25% + ' + offset + 'px - ' + (size / 2) + 'px))';
-                    
-                    Array.from(ele.children).forEach((ele2, i2) => {
-                        ele2.className = 'num ' + getClass(n, i2);
-                    });
-                });
-
-                $("#aincradLevel").html("#" + __level);
-            }
-            function getClass(n, i2) {
-                return classList.find((class_, classIndex) => Math.abs(n - i2) === classIndex) || '';
-            }
-
             // Window Load
             window.addEventListener("load", function(event) {
+                if (__id == "" || __name == "")
+                    window.location.href = "index.html";
+
                 $("#currentUsername").html(__name);
-                $("#playerID").html("#" + __ID);
+                $("#playerID").html("#" + __id);
                 $("#playerName").html(__name);
 
                 setStatus();
@@ -248,7 +178,7 @@
                 <div class="container-fluid">
                     <a class="navbar-brand" href="#">
                         <!-- <img src="https://imgur.com/FuZhgll.png" alt="" width="30" height="24"> -->
-                        MySAO
+                        NoSAO
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -257,19 +187,19 @@
                     <div class="collapse navbar-collapse" id="navbarToggler">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link" href="main.php">Home</a>
+                                <a class="nav-link" href="main.html">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="status.php">Status</a>
+                                <a class="nav-link active" aria-current="page" href="status.html">Status</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="aincrad.php">Aincrad</a>
+                                <a class="nav-link" href="aincrad.html">Aincrad</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="guild.php">Guild</a>
+                                <a class="nav-link" href="guild.html">Guild</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="player.php">Player</a>
+                                <a class="nav-link" href="player.html">Player</a>
                             </li>
                         </ul>
                         <div class="justify-content-end" style="color: white;">
@@ -345,86 +275,6 @@
 
                         <div style="height: 2vh"></div>
 
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="card header-gradient" id="aincrad" style="height: 44vh;">
-                                    <div class="card-header">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span>Aincrad</span>
-                                            <span id="aincradLevel"></span>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="column">
-                                            <div class="num">0</div>
-                                            <div class="num">1</div>
-                                            <div class="num">&zwnj;</div>
-                                            <div class="num">&zwnj;</div>
-                                            <div class="num">&zwnj;</div>
-                                            <div class="num">&zwnj;</div>
-                                            <div class="num">&zwnj;</div>
-                                            <div class="num">&zwnj;</div>
-                                            <div class="num">&zwnj;</div>
-                                            <div class="num">&zwnj;</div>
-                                        </div>
-                                        <div class="column">
-                                            <div class="num">0</div>
-                                            <div class="num">1</div>
-                                            <div class="num">2</div>
-                                            <div class="num">3</div>
-                                            <div class="num">4</div>
-                                            <div class="num">5</div>
-                                            <div class="num">6</div>
-                                            <div class="num">7</div>
-                                            <div class="num">8</div>
-                                            <div class="num">9</div>
-                                        </div>
-                                        <div class="column">
-                                            <div class="num">0</div>
-                                            <div class="num">1</div>
-                                            <div class="num">2</div>
-                                            <div class="num">3</div>
-                                            <div class="num">4</div>
-                                            <div class="num">5</div>
-                                            <div class="num">6</div>
-                                            <div class="num">7</div>
-                                            <div class="num">8</div>
-                                            <div class="num">9</div>
-                                        </div>
-                                        
-                                        <button class="carousel-control-prev" id="aincradLevelPrev" type="button">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Previous</span>
-                                        </button>
-                                        <button class="carousel-control-next" id="aincradLevelNext" type="button">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Next</span>
-                                        </button>
-                                    </div>
-                                    <div class="card-footer">
-                                        <a class="btn btn-sm btn-outline-dark w-100" id="moreAincrad">Click here to see more Information</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="card header-gradient" id="guild" style="height: 44vh;">
-                                    <div class="card-header">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span>Guild</span>
-                                            <span id="guildName"></span>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <canvas id="guildChart">
-                                            <!-- Nothing -->
-                                        </canvas>
-                                    </div>
-                                    <div class="card-footer">
-                                        <a class="btn btn-sm btn-outline-dark w-100" href="guild.php">Click here to see more Information</a>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

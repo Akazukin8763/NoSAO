@@ -80,14 +80,15 @@
                 let confirm = window.confirm("Once you logout, you will die.");
 
                 if (confirm) {
-                    ajax.ajax_deleteAccount().then(function(response) {
+                    window.confirm("暫時無法登出，保留按鈕而已");
+                    /*ajax.ajax_deleteAccount().then(function(response) {
                         if (response.message.successed)
                             location.href = "index.php";
                         else
                             alert("You can not logout!");
                     }).catch(function(jqXHR) {
                         alert("You can not logout!");
-                    });
+                    });*/
                 }
             });
 
@@ -116,19 +117,19 @@
                     <div class="collapse navbar-collapse" id="navbarToggler">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="main.php">Home</a>
+                                <a class="nav-link active" aria-current="page" href="main.html">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="status.php">Status</a>
+                                <a class="nav-link" href="status.html">Status</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="aincrad.php">Aincrad</a>
+                                <a class="nav-link" href="aincrad.html">Aincrad</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="guild.php">Guild</a>
+                                <a class="nav-link" href="guild.html">Guild</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="player.php">Player</a>
+                                <a class="nav-link" href="player.html">Player</a>
                             </li>
                         </ul>
                         <div class="justify-content-end" style="color: white;">
@@ -150,7 +151,7 @@
                 <div class="row">
                     <div class="col-sm-6-13">
                         <div class="card" style="height: 30vh">
-                            <div class="card-image" onclick="location.href='status.php'">
+                            <div class="card-image" onclick="location.href='status.html'">
                                 <img src="src/image/Main-Status.png" class="card-img-top" style="height: 29.7vh;">
                                 <div>
                                     <h2>Status</h2>
@@ -161,7 +162,7 @@
                         <div style="height: 8vh"></div>
 
                         <div class="card" style="height: 30vh">
-                            <div class="card-image" onclick="location.href='guild.php'">
+                            <div class="card-image" onclick="location.href='guild.html'">
                                 <img src="src/image/Main-Guild.png" class="card-img-top" style="height: 29.7vh;">
                                 <div>
                                     <h2>Guild</h2>
@@ -174,7 +175,7 @@
 
                     <div class="col-sm-6-13">
                         <div class="card" style="height: 30vh">
-                            <div class="card-image" onclick="location.href='aincrad.php'">
+                            <div class="card-image" onclick="location.href='aincrad.html'">
                                 <img src="src/image/Main-Aincrad.png" class="card-img-top" style="height: 29.7vh;">
                                 <div>
                                     <h2>Aincrad</h2>
@@ -185,7 +186,7 @@
                         <div style="height: 8vh"></div>
 
                         <div class="card" style="height: 30vh">
-                            <div class="card-image" onclick="location.href='player.php'">
+                            <div class="card-image" onclick="location.href='player.html'">
                                 <img src="src/image/Main-Player.png" class="card-img-top" style="height: 29.7vh;">
                                 <div>
                                     <h2>Player</h2>

@@ -1,4 +1,4 @@
-import { setCookie } from "../start/linkOver.js";
+import { setCookie, getCookie } from "../js/cookie.js";
 
 // https://www.youtube.com/watch?v=kBQ6GMI5iiM
 export function linkStart() {
@@ -27,6 +27,21 @@ export function linkStart() {
             loginMenu();
         });
     });
+}
+
+export function linkOver() {
+    var main = $("#main");
+    main.empty();
+
+    var video = $('<video id="linkVideo" style="width: 100% !important; height: auto !important;"></video>');
+    video.html('<source src="src/video/linkover.mp4" type="video/mp4"></source>');
+    video.appendTo(main);
+    video.trigger("play");
+    
+    video.on("ended", function() {
+        window.location.href = "main.html";
+    });
+
 }
 
 function loginMenu() {
@@ -65,20 +80,23 @@ function loginMenu() {
             $("#loginERR").html("");
 
             var __name = $("#username").val();
-        
+
             $.ajax({
                 type: "POST",
-                url: "API/Player/login.php",
+                url: "/login",
                 dataType: "json",
                 data: {
                     name: __name
                 },
                 success: function(response) {
-                    if (response.message.successed) {
+                    if (response.first.success) {
+                        setCookie("id", response.second.id);
+                        setCookie("name", response.second.name);
+
                         linkOver();
                     }
                     else {
-                        $("#loginERR").html("Account not existed");
+                        $("#loginERR").html(response.first.message);
                     }
                 },
                 error: function(jqXHR) {

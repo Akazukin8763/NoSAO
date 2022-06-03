@@ -1,3 +1,19 @@
+<?php
+    session_start();
+
+    if (isset($_SESSION["ID"])) {
+        $ID = $_SESSION["ID"];
+        $username = $_SESSION["username"];
+
+        setcookie("ID", $ID);
+        setcookie("username", $username);
+    }
+    else {
+        header('location: index.php');
+        exit;
+    }
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -18,7 +34,7 @@
         <title>MySAO</title>
 
         <style>
-           body {
+            body {
                 overflow: hidden;
             }
 
@@ -44,31 +60,8 @@
             }
 
             .card {
-
-                background-image: url('src/image/Aincrad.png');
-                border:0;
-                background-repeat: no-repeat;
-                background-size: cover;
                 transition: .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);
                 cursor: pointer;
-            }
-            .cat{
-                background-image: url('src/image/Black_Cats.png');
-            }
-            .KOB{
-                background-image: url('src/image/KOB_members.png');
-            }
-            .L_C{
-                background-image: url('src/image/Laughing_coffin.png');
-            }
-            .ALF{
-                background-image: url('src/image/ALF.png');
-            }
-            .APPLE{
-                background-image: url('src/image/Golden_Apple.png');
-            }
-            .FIRE{
-                background-image: url('src/image/Fuurinkazan.png');
             }
             .card:hover {
                 transform: scale(1.05);
@@ -91,33 +84,38 @@
             .detail:hover {
                 transform: scale(1.3);
             }
-
-            #buildGuild:hover{
-                transform: scale(1.05);
-                box-shadow: 0 10px 20px rgba(0,0,0,.06), 0 4px 8px rgba(0,0,0,.12);
-            }
-            #quit:hover{
-                transform: scale(1.05);
-                box-shadow: 0 10px 20px rgba(0,0,0,.06), 0 4px 8px rgba(0,0,0,.12);
-            }
         </style>
+
         <script type="module">
             import { getCookie } from "./js/cookie.js";
+            import * as ajax from "./js/ajax.js";
 
             let __ID = getCookie("ID");
             let __name = getCookie("username");
-            console.log(__ID);
-            console.log(__name);
-        
 
-            // Window Load
+            import { setModal } from "./js/aincrad/setModal.js";
+            setModal();
+
+            import { showAincrad } from "./js/aincrad/showAincrad.js";
             window.addEventListener("load", function(event) {
                 $("#currentUsername").html(__name);
+
+                var search, tag, index = 0;
+
+                try {
+                    search = location.search.split("?")[1];
+                    tag = search.split("=")[0];
+                    index = search.split("=")[1];
+
+                    if (tag != "index") index = 0;
+                }
+                catch {
+                    // Nothing
+                }
+                finally {
+                    showAincrad(index % 10);
+                }
             });
-            import { setModal } from "./setModal.js";
-            setModal();
-            import { showGuild } from "./setGuild.js";
-            showGuild();
         </script>
     </head>
     <body>
@@ -131,19 +129,20 @@
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+
                     <div class="collapse navbar-collapse" id="navbarToggler">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="main.php">Home</a>
+                                <a class="nav-link" href="main.php">Home</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="status.php">Status</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="aincrad.php">Aincrad</a>
+                                <a class="nav-link active" aria-current="page" href="aincrad.php">Aincrad</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" href="guild.php">Guild</a>
+                                <a class="nav-link" href="guild.php">Guild</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="player.php">Player</a>
@@ -159,24 +158,25 @@
             </nav>
 
             <div class="container">
-                <div id="carouselGuild" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-indicators" style="bottom: -5vh;" id="indicatorsGuild">
+                <div id="carouselAincrad" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators" style="bottom: -5vh;" id="indicatorsAincrad">
                         <!-- Nothing -->
                     </div>
-                    <div class="carousel-inner" id="innerGuild">
+                    <div class="carousel-inner" id="innerAincrad">
                         <!-- Nothing -->
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselGuild" data-bs-slide="prev" style="left: -15%;">
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselAincrad" data-bs-slide="prev" style="left: -15%;">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselGuild" data-bs-slide="next" style="right: -15%;">
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselAincrad" data-bs-slide="next" style="right: -15%;">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Next</span>
                     </button>
                 </div>
             </div>
-            
+
+            <!-- Modal Description -->
             <div class="modal fade" id="description" tabindex="-1" aria-labelledby="description" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content modal-gradient">
@@ -186,90 +186,47 @@
                         </div>
                         <!-- Description Body -->
                         <div class="modal-body" id="descriptionBody">
-                            <h5 id="guildName"></h5>
+                            <h5 id="mainArea"></h5>
                             <p id="mainDescription"></p>
-                            <h5 id="guildPerson"></h5>
-                            <p id="personDescription"></p>
-                            <h5 id="date"></h5>
-                            <p id="dateDescription"></p>
+                            <h5 id="majorArea"></h5>
+                            <p id="majorDescription"></p>
+                            <h5 id="landscape"></h5>
+                            <p id="landscapeDescription"></p>
                         </div>
                         <!-- Description Footer -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-dark" id="join">加入公會</button>
-                            <button type="button" class="btn btn-outline-dark" id="description-enemy">其他資訊 &gt;</button>
+                            <button type="button" class="btn btn-outline-dark" id="description-enemy">Enemy &gt;</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-
-            <!-- Modal Detail -->
+            <!-- Modal Enemy -->
             <div class="modal fade" id="enemy" tabindex="-1" aria-labelledby="enemy" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content modal-gradient">
-                        <!-- Detail Header -->
+                        <!-- Enemy Header -->
                         <div class="modal-header justify-content-center">
-                            <span class="modal-title" id="guildTitle"></span>
+                            <span class="modal-title" id="enemyHeaderTitle"></span>
                         </div>
-                        <!-- Detail Body -->
+                        <!-- Enemy Body -->
                         <div class="modal-body" id="enemyBody">
-                            
-                            <div id="info">
+                            <h5>Boss</h5>
+                            <div id="boss">
                                 <!-- Nothing -->
                             </div>
-                            <div id="Chart">
-                                <canvas id="guildChart">
-                                    <!-- Nothing -->
-                                </canvas>
+                            <h5>Mobs</h5>
+                            <div id="mobs">
+                                <!-- Nothing -->
                             </div>
-
                         </div>
-                        <!-- Detail Footer -->
+                        <!-- Enemy Footer -->
                         <div class="modal-footer d-flex justify-content-start">
-                            <button type="button" class="btn btn-outline-dark" id="enemy-description">&lt; 詳細資料</button>
+                            <button type="button" class="btn btn-outline-dark" id="enemy-description">&lt; Desciption</button>
                         </div>
-                        
                     </div>
                 </div>
             </div>
-           
-             <!-- Modal BuildGuild -->
-            <div class="modal fade" id="create" tabindex="-1" aria-labelledby="create" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <div class="modal-content modal-gradient">
-
-                        <div class="modal-header justify-content-center">
-                            <span class="modal-title" id="createTitle">Create a guild</span>
-                        </div>
-
-                        <div class="modal-body" id="createBody">
-                        <div>
-                            <label for="uploadTitle" class="form-label" required="required">Name：</label>
-                            <input type="text" class="form-control" id="uploadTitle" name="uploadTitle">
-                        </div>
-                            
-                        </div>
- 
-                        <div class="modal-footer d-flex justify-content-end">
-                            <button type="button" class="btn btn-outline-dark" id="create_guild">Create</button>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <h1>&nbsp;</h1>
-            </div>
-            <div>
-                <h1>&nbsp;</h1>
-            </div>
-            <div class="container d-flex">
-                <button type="button" class="fw-bold m-auto btn btn-outline-dark" style=" height: 30vh; width:50vh; background-image: url('src/image/new_guild.png');font-size: 50px;background-repeat: no-repeat;background-position: center;background-size: cover;" id="buildGuild">創建公會</button>
-                <button type="button" class="fw-bold m-auto btn btn-outline-dark" style=" height: 30vh; width:50vh; background-image: url('src/image/leaveGuild.png');font-size: 50px;background-repeat: no-repeat;background-position: center;background-size: cover;" id="quit">退出公會</button>
-            </div>
-
-        </div>  
-            
+        </div>
     </body>
 </html>

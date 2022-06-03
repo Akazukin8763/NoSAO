@@ -17,36 +17,40 @@ public class CharacterService {
     @Autowired
     private CharacterRepository repository;
 
-    public Character createCharacter(Character request) {
-        Character character = new Character();
-        character.setName(request.getName());
-        character.setDescription(request.getDescription());
+//    public Character getCharacter(String id) {
+//        return repository.findById(id)
+//                .orElseThrow(() -> new NotFoundException("Can't find character."));
+//    }
+//
+//    public List<Character> getCharacters(CharacterQueryParameter param) {
+//        return repository.findAll();
+//    }
 
-        return repository.insert(character);
+    public Character getCharacterByName(String name) {
+        return repository.findByName(name);
     }
 
-    public Character getCharacter(String id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Can't find character."));
-    }
-
-    public Character replaceCharacter(String id, Character request) {
-        Character oldCharacter = getCharacter(id);
-
-        Character character = new Character();
-        character.setId(oldCharacter.getId());
-        character.setName(request.getName());
-        character.setDescription(request.getDescription());
-
-        return repository.save(character);
-    }
-
-    public void deleteCharacter(String id) {
-        repository.deleteById(id);
-    }
-
-    public List<Character> getCharacters(CharacterQueryParameter param) {
-        return repository.findAll();
-    }
+//    public Character createCharacter(Character request) {
+//        Character character = new Character();
+//        character.setName(request.getName());
+//        character.setDescription(request.getDescription());
+//
+//        return repository.insert(character);
+//    }
+//
+//    public Character replaceCharacter(String id, Character request) {
+//        Character oldCharacter = getCharacter(id);
+//
+//        Character character = new Character();
+//        character.setId(oldCharacter.getId());
+//        character.setName(request.getName());
+//        character.setDescription(request.getDescription());
+//
+//        return repository.save(character);
+//    }
+//
+//    public void deleteCharacter(String id) {
+//        repository.deleteById(id);
+//    }
 
 }

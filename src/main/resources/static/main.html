@@ -16,7 +16,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <title>MySAO</title>
+        <title>NoSAO</title>
 
         <style>
             .Aincrad {
@@ -72,8 +72,8 @@
             import { getCookie } from "./js/cookie.js";
             import * as ajax from "./js/ajax.js";
 
-            let __ID = getCookie("ID");
-            let __name = getCookie("username");
+            let __id = getCookie("id");
+            let __name = getCookie("name");
 
             // Logout
             $("#logout").click(function() {
@@ -93,6 +93,9 @@
 
             // Window Load
             window.addEventListener("load", function(event) {
+                if (__id == "" || __name == "")
+                    window.location.href = "index.html";
+
                 $("#currentUsername").html(__name);
             });
         </script>
@@ -104,7 +107,7 @@
                 <div class="container-fluid">
                     <a class="navbar-brand" href="#">
                         <!-- <img src="https://imgur.com/FuZhgll.png" alt="" width="30" height="24"> -->
-                        MySAO
+                        NoSAO
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>

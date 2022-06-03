@@ -1,5 +1,5 @@
-import * as guild from "./js/guild/showGraph.js";
-import { getCookie } from "./js/cookie.js";
+import * as guild from "./showGraph.js";
+import { getCookie } from "../../js/cookie.js";
 export function showGuild(index = 0) {
     let noName = "[No Name]";
     let noDescription = "...";
@@ -111,20 +111,20 @@ export function showGuild(index = 0) {
                     let guild_person = guildInfo.leader;
 
                     var col = $('<div class="col-md-5" style="width:50%;"></div>');
-                    if(guild_name=="月夜黑貓團")
-                        var card = $('<div class="cat card card-cover h-100 overflow-hidden shadow-lg rounded-5"></div>');
-                    else if(guild_name=="血盟騎士團")
-                        var card = $('<div class="KOB card card-cover h-100 overflow-hidden shadow-lg rounded-5"></div>');
-                    else if(guild_name=="微笑棺木")
-                        var card = $('<div class="L_C card card-cover h-100 overflow-hidden shadow-lg rounded-5"></div>');
-                    else if(guild_name=="艾恩葛朗特解放軍")
-                        var card = $('<div class="ALF card card-cover h-100 overflow-hidden shadow-lg rounded-5"></div>');
-                    else if(guild_name=="黃金蘋果")
-                        var card = $('<div class="APPLE card card-cover h-100 overflow-hidden shadow-lg rounded-5"></div>');
-                    else if(guild_name=="風林火山")
-                        var card = $('<div class="FIRE card card-cover h-100 overflow-hidden shadow-lg rounded-5"></div>');
-                    else
-                        var card = $('<div class="card card-cover h-100 overflow-hidden shadow-lg rounded-5"></div>');
+                    var card = $('<div class="card card-cover h-100 overflow-hidden shadow-lg rounded-5"></div>');
+
+                    if(guild_name == "月夜黑貓團")
+                        card.css("background-image", "url('src/image/Black_Cats.png')");
+                    else if(guild_name == "血盟騎士團")
+                        card.css("background-image", "url('src/image/Knights_Of_Blood.png')");
+                    else if(guild_name == "微笑棺木")
+                        card.css("background-image", "url('src/image/Laughing_Coffin.png')");
+                    else if(guild_name == "艾恩葛朗特解放軍")
+                        card.css("background-image", "url('src/image/Aincrad_Leave_Forces.png')");
+                    else if(guild_name == "黃金蘋果")
+                        card.css("background-image", "url('src/image/Golden_Apple.png')");
+                    else if(guild_name == "風林火山")
+                        card.css("background-image", "url('src/image/Fuurinkazan.png')");
                     
                     var cardBody = $('<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1"></div>');
 
@@ -138,7 +138,6 @@ export function showGuild(index = 0) {
                     cardBody.appendTo(card);
                     card.appendTo(col);
                     col.appendTo(innerAll[Math.floor(j / 2)]);
-                    let guildsNumber = 0;
                     
                     card.click(function() {     
                        
@@ -148,10 +147,10 @@ export function showGuild(index = 0) {
 
                         ajax_getGuildDetail(guild_name).then(function(response) {
                             if (response.message.successed) {
-                                guildsNumber = 0;
                                 console.log(response.memberDistribution);
                                 let detail = new Map();
 
+                                let guildsNumber = 0;
                                 response.memberDistribution.forEach(function(element) {
                                     detail.set(element.lv, element.num);
                                     guildsNumber+=element.num;

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Bootstrap CSS --><!-- CSS only -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <title>MySAO</title>
+
+        <style>
+            .Aincrad {
+                height: 100vh;
+                background-image: url('src/image/Aincrad.png');
+                background-size: cover;
+            }
+            .header-gradient {
+                background: linear-gradient(270deg, rgba(16, 46, 102, 0.9)0%, rgba(135, 220, 233, 0.8)100%);
+                background: -moz-linear-gradient(270deg, rgba(16, 46, 102, 0.9)0%, rgba(135, 220, 233, 0.8)100%);
+                background: -webkit-linear-gradient(270deg, rgba(16, 46, 102, 0.9)0%, rgba(135, 220, 233, 0.8)100%);
+                background: -o-linear-gradient(270deg, rgba(16, 46, 102, 0.9)0%, rgba(135, 220, 233, 0.8)100%);
+            }
+            .modal-header {
+                color: #EEEEEE;
+                font-weight: bold;
+            }
+            .modal-body {
+                color: #EEEEEE;
+            }
+            .modal-footer {
+                color: #EEEEEE;
+            }
+            .modal.fade .modal-dialog {
+                -webkit-transition: -webkit-transform 0.6s ease-out;
+                -moz-transition: moz-transform 0.6s ease-out;
+                -ms-transition: -ms-transform 0.6s ease-out;
+                -o-transition: -o-transform 0.6s ease-out;
+                transition: transform 0.6s ease-out;
+            }
+            .form-control:focus {
+                border-color: rgba(135, 220, 233, 0.95);
+                box-shadow: 0 0 0 0.2rem rgba(16, 46, 102, 0.25);
+            }
+        </style>
+
+        <script type="module">
+            import * as ajax from "./js/ajax.js";
+
+            let name;
+
+            window.addEventListener("load", function(event) {
+                $("#register").modal("show");
+                //$("#registerAttackTest").modal("show");
+                //$("#registerHealthTest").modal("show");
+                //$("#registerDefenseTest").modal("show");
+                //$("#registerReactionTest").modal("show");
+                //$("#registerAgileTest").modal("show");
+                //$("#testResult").modal("show");
+            });
+
+            // Username Input
+            $("#registerUsername").on("change keyup paste", function () {
+                usernameCheck($("#registerUsername").val());
+            });
+            function usernameCheck(name) {
+                if (name.length == 0) {
+                    $("#registerUsernameERR").html("Can not be empty.");
+                    $("#registerUsername").focus();
+                    return false;
+                }
+                else if (name.length > 32) {
+                    $("#registerUsernameERR").html("Can not exceed 32-bit word.");
+                    $("#registerUsername").focus();
+                    return false;
+                }
+                $("#registerUsernameERR").html("");
+                return true;
+            }
+
+            // Register Username
+            // Back Button
+            $("#registerBack").click(function() {
+                history.go(-1);
+            });
+            // Next Button
+            $("#registerNext").click(function() {
+                name = $("#registerUsername").val();
+
+                if (usernameCheck(name)) {
+                    ajax.ajax_checkNameExist(name).then(function(response) {
+                        if (response.message.successed) {
+                            $("#register").modal("hide");
+                            $("#registerAttackTest").modal("show");
+                        }
+                        else {
+                            $("#registerUsernameERR").html("This name has been taken.");
+                        }
+                    }).catch(function(jqXHR) {
+                        $("#registerUsernameERR").html("伺服器連線錯誤。");
+                    });
+
+                }
+            });
+
+            // Attack Test 
+            // https://www.youtube.com/watch?v=h8mqCy-KK0Y
+            import * as attack from "./js/register/attackTest.js";
+            $("#attackStart").click(function() {
+                attack.start();
+            });
+
+            // Health Test
+            import * as health from "./js/register/healthTest.js";
+            $("#healthStart").click(function() {
+                health.start();
+            })
+
+            // Defense Test
+            import * as defense from "./js/register/defenseTest.js";
+            $("#defenseStart").click(function() {
+                defense.start();
+            })
+
+            // Reaction Test
+            import * as reaction from "./js/register/reactionTest.js";
+            $("#reactionStart").click(function() {
+                reaction.start();
+            })
+
+            // Agile Test
+            import * as agile from "./js/register/agileTest.js";
+            $("#agileStart").click(function() {
+                agile.start();
+            })
+
+            // Result
+            import { showGraph } from "./js/ability/showGraph.js";
+            $("#testResult").on("show.bs.modal", function () {
+                $("#resultName").html(name + "'s Testing Result");
+
+                let attack = $("#abilityAttack").val();
+                let health = $("#abilityHealth").val();
+                let defense = $("#abilityDefense").val();
+                let reaction = $("#abilityReaction").val();
+                let agile = $("#abilityAgile").val();
+                showGraph($("#resultChart"), attack, health, defense, reaction, agile);
+            });
+            $("#login").click(function() {
+                let attack = $("#abilityAttack").val();
+                let health = $("#abilityHealth").val();
+                let defense = $("#abilityDefense").val();
+                let reaction = $("#abilityReaction").val();
+                let agile = $("#abilityAgile").val();
+
+                ajax.ajax_registerPlayer(name, attack, health, defense, reaction, agile).then(function(response) {
+                    if (response.message.successed) {
+                        location.href = "index.php";
+                    }
+                    else {
+                        alert("Register Failed...");
+                        location.reload();
+                    }
+                }).catch(function(jqXHR) {
+                    alert("Register Failed...");
+                    location.reload();
+                });
+
+                //location.href = "index.php";
+            });
+        </script>
+    </head>
+    <body >
+        <div class="d-flex justify-content-center align-items-center Aincrad">
+            <!-- Modal Username -->
+            <div class="modal fade" id="register" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="register" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content header-gradient">
+                        <!-- Register Header -->
+                        <div class="modal-header justify-content-center">
+                            <span class="modal-title">Create Character</span>
+                        </div>
+                        <!-- Register Body -->
+                        <div class="modal-body">
+                            <div class="row">
+                                <label class="col form-label" required="required">Enter your <span style="color:rgba(1, 7, 19, 0.9)">Character</span> Name</label>
+                                <label class="col d-flex justify-content-end" id="registerUsernameERR" style="color: rgb(235, 17, 17);"></label>
+                            </div>
+                            <input type="text" class="form-control" id="registerUsername"></input>
+                        </div>
+                        <!-- Register Footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" id="registerBack">&lt; Back</button>
+                            <button type="button" class="btn btn-outline-primary" id="registerNext">Next &gt;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attack Test -->
+            <div class="modal fade" id="registerAttackTest" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerAttackTest" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content header-gradient">
+                        <!-- Attack Header -->
+                        <div class="modal-header justify-content-center">
+                            <span class="modal-title">Attack Testing</span>
+                        </div>
+                        <!-- Attack Body -->
+                        <div class="modal-body">
+                            <div class="row" id="attackTest">
+                                Test Content：<br>
+                                1. To start the test, hit the 'Start' button below the modal.<br>
+                                2. After clicking the button, clicking with your mouse in the frame as fast as you can in the given timeframe.<br>
+                                3. Once the time runs out, the final score will be presented. The score is shown with attack ability.
+                            </div>
+                        </div>
+                        <!-- Attack Footer -->
+                        <div class="modal-footer justify-content-center" id="attackResult">
+                            <button type="button" class="btn btn-outline-light" id="attackStart">Start</button>
+                        </div>
+                    </div>
+                </div>
+                <input type="text" value="0" id="abilityAttack" style="display: none;"></input> <!-- Save Attack -->
+            </div>
+
+            <!-- Health Test -->
+            <div class="modal fade" id="registerHealthTest" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerHealthTest" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content header-gradient">
+                        <!-- Health Header -->
+                        <div class="modal-header justify-content-center">
+                            <span class="modal-title">Health Testing</span>
+                        </div>
+                        <!-- Health Body -->
+                        <div class="modal-body">
+                            <div class="row" id="healthTest">
+                                <!--
+                                Test Content：<br>
+                                IDK
+                                -->
+                            </div>
+                        </div>
+                        <!-- Health Footer -->
+                        <div class="modal-footer justify-content-center" id="healthResult">
+                            <button type="button" class="btn btn-outline-light" id="healthStart">Start</button>
+                        </div>
+                    </div>
+                </div>
+                <input type="text" value="0" id="abilityHealth" style="display: none;"></input> <!-- Save Health -->
+            </div>
+
+            <!-- Defense Test -->
+            <div class="modal fade" id="registerDefenseTest" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerDefenseTest" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content header-gradient">
+                        <!-- Defense Header -->
+                        <div class="modal-header justify-content-center">
+                            <span class="modal-title">Defense Testing</span>
+                        </div>
+                        <!-- Defense Body -->
+                        <div class="modal-body">
+                            <div class="row" id="defenseTest">
+                                <!--
+                                Test Content：<br>
+                                IDK
+                                -->
+                            </div>
+                        </div>
+                        <!-- Defense Footer -->
+                        <div class="modal-footer justify-content-center" id="defenseResult">
+                            <button type="button" class="btn btn-outline-light" id="defenseStart">Start</button>
+                        </div>
+                    </div>
+                </div>
+                <input type="text" value="0" id="abilityDefense" style="display: none;"></input> <!-- Save Defense -->
+            </div>
+
+            <!-- Reaction Test -->
+            <div class="modal fade" id="registerReactionTest" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerReactionTest" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content header-gradient">
+                        <!-- Reaction Header -->
+                        <div class="modal-header justify-content-center">
+                            <span class="modal-title">Reaction Testing</span>
+                        </div>
+                        <!-- Reaction Body -->
+                        <div class="modal-body">
+                            <div class="row" id="reactionTest">
+                                Test Content：<br>
+                                1. To start the test, hit the 'Start' button below the modal.<br>
+                                2. After clicking the button, Tier-S Ingredients will fade out in 3 sec.<br>
+                                3. Once the Tier-S Ingredients comes out, you need to click the screen and the score will be presented. The score is shown with reaction ability.<br>
+                                4. If you hit the screen before it comes out, your score will be 0.
+                            </div>
+                        </div>
+                        <!-- Reaction Footer -->
+                        <div class="modal-footer justify-content-center" id="reactionResult">
+                            <button type="button" class="btn btn-outline-light" id="reactionStart">Start</button>
+                        </div>
+                    </div>
+                </div>
+                <input type="text" value="0" id="abilityReaction" style="display: none;"></input> <!-- Save Reaction -->
+            </div>
+
+            <!-- Agile Test -->
+            <div class="modal fade" id="registerAgileTest" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerAgileTest" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content header-gradient">
+                        <!-- Agile Header -->
+                        <div class="modal-header justify-content-center">
+                            <span class="modal-title">Agile Testing</span>
+                        </div>
+                        <!-- Agile Body -->
+                        <div class="modal-body">
+                            <div class="row" id="agileTest">
+                                Test Content：<br>
+                                1. To start the test, hit the 'Start' button below the modal.<br>
+                                2. After clicking the button, 3 Tier-S Ingredients will come out.<br>
+                                3. You need to catch them by clicking it, and the other Tier-S Ingredients will comes out to keep there is 3 Tier-S Ingredients on the screen.<br>
+                                4. The final score will be presented after 16 sec, the score is shown with agile ability.<br>
+                                5. If you hit the screen before it comes out, your score will deduct.
+                            </div>
+                        </div>
+                        <!-- Agile Footer -->
+                        <div class="modal-footer justify-content-center" id="agileResult">
+                            <button type="button" class="btn btn-outline-light" id="agileStart">Start</button>
+                        </div>
+                    </div>
+                </div>
+                <input type="text" value="0" id="abilityAgile" style="display: none;"></input> <!-- Save Agile -->
+            </div>
+
+            <!-- Test Result -->
+            <div class="modal fade" id="testResult" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="testResult" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content header-gradient">
+                        <!-- Result Header -->
+                        <div class="modal-header justify-content-center">
+                            <span class="modal-title" id="resultName"></span>
+                        </div>
+                        <!-- Result Body -->
+                        <div class="modal-body">
+                            <div class="row">
+                                <canvas id="resultChart">
+                                    <!-- Nothing -->
+                                </canvas>
+                            </div>
+                        </div>
+                        <!-- Result Footer -->
+                        <div class="modal-footer justify-content-center" id="agileResult">
+                            <button type="button" class="btn btn-outline-light" id="login">Login</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

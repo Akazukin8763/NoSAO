@@ -1,6 +1,10 @@
 package nosao.entity;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "character")
 public class Character {
+
     private String id;
     private String name;
     private String description;
@@ -16,11 +20,15 @@ public class Character {
     private int reaction;
     private int agile;
 
-    public Character(){
+    public Character() {
 
     }
-    public Character(String id, String name, String description, String helmet, String chestplate, String vambrace, String cuish, String main,
-                     String sub, int health, int attack, int defense, int reaction, int agile){
+
+    public Character(String id,
+                     String name, String description,
+                     String helmet, String chestplate, String vambrace, String cuish,
+                     String main, String sub,
+                     int health, int attack, int defense, int reaction, int agile) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -36,27 +44,26 @@ public class Character {
         this.reaction = reaction;
         this.agile = agile;
     }
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public void setId(String id) {
         this.id = id;
+    }
+    public String getId() {
+        return id;
     }
 
     public void setName(String name) {
         this.name = name;
     }
+    public String getName() {
+        return name;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
     public String getDescription() {
         return description;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
 }

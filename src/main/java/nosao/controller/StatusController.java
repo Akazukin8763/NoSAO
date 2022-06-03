@@ -1,11 +1,11 @@
 package nosao.controller;
 
-import nosao.entity.Status;
+import nosao.entity.Response;
 import nosao.entity.Character;
+import nosao.entity.Equipments;
 import nosao.entity.Ability;
 import nosao.service.CharacterService;
 
-import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,40 +19,53 @@ public class StatusController {
     private CharacterService characterService;
 
     @PostMapping("/getCharacterDescription")
-    public ResponseEntity<Pair<Status, String>> getCharactersDescriptionByName(String name) {
+    public ResponseEntity<Response<String>> getCharactersDescriptionByName(String name) {
         Character character = characterService.getCharacterDescriptionByName(name);
 
-        Pair<Status, String> response;
+        Response<String> response;
         if (null == character)
-            response = Pair.of(new Status(false, "Account not existed"), "");
+            response = new Response<>(null, false, "Account not existed");
         else
-            response = Pair.of(new Status(true), character.getDescription());
+            response = new Response<>(character.getDescription(), true, "Account not existed");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/getCharacterEquipments")
+    public ResponseEntity<Response<Equipments>> getCharactersEquipmentsByName(String name) {
+        Character character = characterService.getCharacterEquipmentsByName(name);
+
+        Response<Equipments> response;
+        if (null == character)
+            response = new Response<>(new Equipments(), false, "Account not existed");
+        else
+            response = new Response<>(character.getEquipments(), true);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/getCharacterAbility")
-    public ResponseEntity<Pair<Status, Ability>> getCharactersAbilityByName(String name) {
+    public ResponseEntity<Response<Ability>> getCharactersAbilityByName(String name) {
         Character character = characterService.getCharacterAbilityByName(name);
 
-        Pair<Status, Ability> response;
+        Response<Ability> response;
         if (null == character)
-            response = Pair.of(new Status(false, "Account not existed"), new Ability());
+            response = new Response<>(null, false, "Account not existed");
         else
-            response = Pair.of(new Status(true), character.getAbility());
+            response = new Response<>(character.getAbility(), true);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/updateCharacterDescription")
-    public ResponseEntity<Status> getCharactersAbilityByName(String id, String description) {
+    public ResponseEntity<Response<Object>> getCharactersAbilityByName(String id, String description) {
         Character character = characterService.updateCharacter(id, description);
 
-        Status response;
+        Response<Object> response;
         if (null == character)
-            response = new Status(false, "更新 Description 失敗");
+            response = new Response<>(null, false, "更新 Description 失敗");
         else
-            response = new Status(true);
+            response = new Response<>(null, true);
 
         return ResponseEntity.ok(response);
     }

@@ -33,6 +33,10 @@ public class CharacterService {
         return repository.findByNameIncludeDescription(name);
     }
 
+    public Character getCharacterEquipmentsByName(String name) {
+        return repository.findByNameIncludeEquipments(name);
+    }
+
     public Character getCharacterAbilityByName(String name) {
         return repository.findByNameIncludeAbility(name);
     }

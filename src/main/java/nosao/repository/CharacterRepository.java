@@ -18,6 +18,10 @@ public interface CharacterRepository extends MongoRepository<Character, String> 
     @Query(value="{'name': ?0}", fields="{'_id': 0, 'description': 1}")
     Character findByNameIncludeDescription(String name);
 
+    //@Query(value="{'name': ?0}", fields="{'_id': 0, 'equipment': 1}")
+    @Query("{'name': ?0}")
+    Character findByNameIncludeEquipments(String name);
+
     @Query(value="{'name': ?0}", fields="{'_id': 0, 'ability': 1}")
     Character findByNameIncludeAbility(String name);
 

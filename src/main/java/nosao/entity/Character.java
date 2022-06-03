@@ -9,7 +9,7 @@ public class Character {
     private @Id String id;
     private String name;
     private String description;
-    private Equipment equipment;
+    private Equipments equipments;
     private Ability ability;
 
     public Character() {
@@ -18,17 +18,17 @@ public class Character {
 
     public Character(String id,
                      String name, String description,
-                     Equipment equipment, Ability ability) {
+                     Equipments equipments, Ability ability) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.equipment = equipment;
+        this.equipments = equipments;
         this.ability = ability;
     }
 
     public String toString() {
-        return String.format("{ id: %s, name: %s, description: %s, equipment: %s, ability: %s }",
-                id, name, description, equipment, ability);
+        return String.format("{ id: %s, name: %s, description: %s, equipments: %s, ability: %s }",
+                id, name, description, equipments, ability);
     }
 
     public void setId(String id) {
@@ -52,11 +52,11 @@ public class Character {
         return description;
     }
 
-    public void setEquipment(Equipment equipment) {
-        this.equipment = equipment;
+    public void setEquipments(Equipments equipments) {
+        this.equipments = equipments;
     }
-    public Equipment getEquipment() {
-        return equipment;
+    public Equipments getEquipments() {
+        return equipments;
     }
 
     public void setAbility(Ability ability) {

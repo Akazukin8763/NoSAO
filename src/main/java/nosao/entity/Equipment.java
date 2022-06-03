@@ -1,38 +1,67 @@
 package nosao.entity;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document(collection = "equipment")
 public class Equipment {
 
-    private Armor armor;
-    private Weapon weapon;
+    private @Id String id;
+    private String type;
+    private String name;
+    private String img;
+    private Ability ability;
 
     public Equipment() {
 
     }
 
-    public Equipment(Armor armor, Weapon weapon) {
-        this.armor = armor;
-        this.weapon = weapon;
+    public Equipment(String id, String type, String name, String img, Ability ability) {
+        this.id = id;
+        this.type = type;
+        this.name = name;
+        this.img = img;
+        this.ability = ability;
     }
 
     public String toString() {
-        return String.format("{ armor: %s, weapon: %s }", armor, weapon);
+        return String.format("{ id: %s, type: %s, name: %s, img: %s, ability: %s }",
+                id, type, name, img, ability);
     }
 
-    public void setArmor(Armor armor) {
-        this.armor = armor;
+    public void setId(String id) {
+        this.id = id;
     }
-    public Armor getArmor() {
-        return armor;
+    public String getId() {
+        return id;
     }
 
-    public void setWeapon(Weapon weapon) {
-        this.weapon = weapon;
+    public void setType(String type) {
+        this.type = type;
     }
-    public Weapon getWeapon() {
-        return weapon;
+    public String getType() {
+        return type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+    public String getImg() {
+        return img;
+    }
+
+    public void setAbility(Ability ability) {
+        this.ability = ability;
+    }
+    public Ability getAbility() {
+        return ability;
     }
 
 }

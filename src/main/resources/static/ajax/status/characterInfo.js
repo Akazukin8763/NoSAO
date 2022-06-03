@@ -35,3 +35,22 @@ export function getDescription(__name) {
         })
     });
 }
+
+export function getEquipments(__name) {
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: "POST",
+            url: "/status/getCharacterEquipments",
+            dataType: "json",
+            data: {
+                name: __name
+            },
+            success: function(response) {
+                resolve(response)
+            },
+            error: function(jqXHR) {
+                reject(jqXHR)
+            }
+        })
+    });
+}

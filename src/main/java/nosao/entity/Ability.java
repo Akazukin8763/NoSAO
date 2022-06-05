@@ -12,7 +12,7 @@ public class Ability {
     private int agile;
 
     public Ability() {
-
+        this(0, 0, 0, 0, 0);
     }
 
     public Ability(int health, int attack, int defense, int reaction, int agile) {

@@ -27,14 +27,47 @@
                 background: -webkit-linear-gradient(270deg, rgba(16, 46, 102, 0.9)0%, rgba(135, 220, 233, 0.8)100%);
                 background: -o-linear-gradient(270deg, rgba(16, 46, 102, 0.9)0%, rgba(135, 220, 233, 0.8)100%);
             }
-
+            .modal-gradient {
+                background: linear-gradient(270deg, rgba(57, 170, 96, 0.9)0%, rgba(135, 189, 201, 1)67%);
+                background: -moz-linear-gradient(270deg, rgba(57, 170, 96, 0.9)0%, rgba(135, 189, 201, 1)67%);
+                background: -webkit-linear-gradient(270deg, rgba(57, 170, 96, 0.9)0%, rgba(135, 189, 201, 1)67%);
+                background: -o-linear-gradient(270deg, rgba(57, 170, 96, 0.9)0%, rgba(135, 189, 201, 1)67%);
+            }
+            .modal-header {
+                font-weight: bold;
+            }
+            
             .card-header {
                 color: white;
+            }
+            .card-image {
+                position: relative;
+                text-align: center;
+            }
+            .card-image img {
+                opacity: 80%;
+            }
+            .card-image div {
+                position: absolute;
+                top: 100%;
+                left: 0%;
+                transform: translate(5%, -80%);
             }
 
             .form-control:focus {
                 border-color: rgba(135, 220, 233, 0.95);
                 box-shadow: 0 0 0 0.2rem rgba(16, 46, 102, 0.25);
+            }
+
+            input {
+                background: transparent;
+                border: none;
+                border-bottom: 1px solid #000000;
+                outline:none;
+                box-shadow:none;
+            }
+            .bi-search:hover {
+                transform: scale(1.05);
             }
         </style>
 
@@ -44,27 +77,43 @@
             let __id = getCookie("id");
             let __name = getCookie("name");
 
-            // Ability, Description
-            import { showAbilityGraph } from "./js/graph/showGraph.js";
-            import { getAbility, getDescription } from "./ajax/status/characterInfo.js"
-            function setStatus() {
-                getAbility(__name).then(function(response) {
-                    if (response.first.success) {
-                        let ability = response.second;
+            // Init ability
+            var attack = 0;
+            var health = 0;
+            var defense = 0;
+            var reaction = 0;
+            var agile = 0;
 
-                        // Ability
-                        let attack = ability.attack;
-                        let health = ability.health;
-                        let defense = ability.defense;
-                        let reaction = ability.reaction;
-                        let agile = ability.agile;
-                        
-                        showAbilityGraph($("#abilityChart"), attack, health, defense, reaction, agile);
-                        $("#attack").html(attack);
-                        $("#health").html(health);
-                        $("#defense").html(defense);
-                        $("#reaction").html(reaction);
-                        $("#agile").html(agile);
+            // Equipments, Ability
+            import { getCharacterEquipmentInfo } from "./ajax/equipment/getEquipment.js"
+            import { setAbilityChart } from "./js/equipment/setChart.js";
+            import { getAbility, getEquipments } from "./ajax/status/characterInfo.js"
+            import { initEquipments } from "./js/equipment/setEquipments.js"
+            function setStatus() {
+                getCharacterEquipmentInfo(__name).then(function(response) {
+                    if (response.success) {
+                        initEquipments(response.data.equipmentList);
+
+                        getAbility(__name).then(function(response) {
+                            if (response.success) {
+                                let ability = response.data;
+
+                                // Ability
+                                attack = ability.attack;
+                                health = ability.health;
+                                defense = ability.defense;
+                                reaction = ability.reaction;
+                                agile = ability.agile;
+                                
+                                //console.log(ability);
+                                setAbilityChart(attack, health, defense, reaction, agile);
+                            }
+                            else {
+                                location.href = "main.html";
+                            }
+                        }).catch(function(jqXHR) {
+                            location.href = "main.html";
+                        });
                     }
                     else {
                         location.href = "main.html";
@@ -74,7 +123,305 @@
                 });
             }
 
+            // Select Equipment
+            import { getEquipmentByType, getEquipmentByTypeAndNameLike } from "./ajax/equipment/getEquipment.js"
+            import { getHelmetData, getChestplateData, getVambraceData, getCuishData, getMainData, getSubData } from "./js/equipment/setEquipments.js"
+            import { initCurrent, initAvailable } from "./js/equipment/setModel.js"
+            $("#armorHelmet").click(function() {
+                getEquipmentByType("HELMET").then(function(response) {
+                    if (response.success) {
+                        let equipment = response.data;
+                        
+                        let current = equipment.filter(function(item) {
+                            return item.name === getHelmetData().name;
+                        });
+                        let available = equipment.filter(function(item) {
+                            return item.name !== getHelmetData().name;
+                        });
+
+                        $("#helmet").modal("show");
+                        $("#textHelmet").val("");
+                        initCurrent($("#currentHelmet"), current);
+                        initAvailable($("#availableHelmet"), available);
+                    }
+                    else {
+                        // Nothing
+                    }
+                }).catch(function(jqXHR) {
+                    // Nothing
+                });
+            });
+            $("#armorChestplate").click(function() {
+                getEquipmentByType("CHESTPLATE").then(function(response) {
+                    if (response.success) {
+                        let equipment = response.data;
+
+                        let current = equipment.filter(function(item) {
+                            return item.name === getChestplateData().name;
+                        });
+                        let available = equipment.filter(function(item) {
+                            return item.name !== getChestplateData().name;
+                        });
+
+                        $("#chestplate").modal("show");
+                        $("#textChestplate").val("");
+                        initCurrent($("#currentChestplate"), current);
+                        initAvailable($("#availableChestplate"), available);
+                    }
+                    else {
+                        // Nothing
+                    }
+                }).catch(function(jqXHR) {
+                    // Nothing
+                });
+            });
+            $("#armorVambrace").click(function() {
+                getEquipmentByType("VAMBRACE").then(function(response) {
+                    if (response.success) {
+                        let equipment = response.data;
+
+                        let current = equipment.filter(function(item) {
+                            return item.name === getVambraceData().name;
+                        });
+                        let available = equipment.filter(function(item) {
+                            return item.name !== getVambraceData().name;
+                        });
+
+                        $("#vambrace").modal("show");
+                        $("#textVambrace").val("");
+                        initCurrent($("#currentVambrace"), current);
+                        initAvailable($("#availableVambrace"), available);
+                    }
+                    else {
+                        // Nothing
+                    }
+                }).catch(function(jqXHR) {
+                    // Nothing
+                });
+            });
+            $("#armorCuish").click(function() {
+                getEquipmentByType("CUISH").then(function(response) {
+                    if (response.success) {
+                        let equipment = response.data;
+                        
+                        let current = equipment.filter(function(item) {
+                            return item.name === getCuishData().name;
+                        });
+                        let available = equipment.filter(function(item) {
+                            return item.name !== getCuishData().name;
+                        });
+
+                        $("#cuish").modal("show");
+                        $("#textCuish").val("");
+                        initCurrent($("#currentCuish"), current);
+                        initAvailable($("#availableCuish"), available);
+                    }
+                    else {
+                        // Nothing
+                    }
+                }).catch(function(jqXHR) {
+                    // Nothing
+                });
+            });
+            $("#weaponMain").click(function() {
+                getEquipmentByType("MAIN").then(function(response) {
+                    if (response.success) {
+                        let equipment = response.data;
+                        
+                        let current = equipment.filter(function(item) {
+                            return item.name === getMainData().name;
+                        });
+                        let available = equipment.filter(function(item) {
+                            return item.name !== getMainData().name;
+                        });
+
+                        $("#main").modal("show");
+                        $("#textMain").val("");
+                        initCurrent($("#currentMain"), current);
+                        initAvailable($("#availableMain"), available);
+                    }
+                    else {
+                        // Nothing
+                    }
+                }).catch(function(jqXHR) {
+                    // Nothing
+                });
+            });
+            $("#weaponSub").click(function() {
+                getEquipmentByType("SUB").then(function(response) {
+                    if (response.success) {
+                        let equipment = response.data;
+                        
+                        let current = equipment.filter(function(item) {
+                            return item.name === getSubData().name;
+                        });
+                        let available = equipment.filter(function(item) {
+                            return item.name !== getSubData().name;
+                        });
+
+                        $("#sub").modal("show");
+                        $("#textSub").val("");
+                        initCurrent($("#currentSub"), current);
+                        initAvailable($("#availableSub"), available);
+                    }
+                    else {
+                        // Nothing
+                    }
+                }).catch(function(jqXHR) {
+                    // Nothing
+                });
+            });
+            
+            // Search Equipment
+            $("#textHelmet").keyup(function(e) {
+                if (e.key === "Enter")
+                    $("#searchHelmet").click();
+            })
+            $("#searchHelmet").click(function() {
+                getEquipmentByTypeAndNameLike("HELMET", $("#textHelmet").val()).then(function(response) {
+                    if (response.success) {
+                        let equipment = response.data;
+                        let available = equipment.filter(function(item) {
+                            return item.name !== getHelmetData().name;
+                        });
+
+                        initAvailable($("#availableHelmet"), available);
+                    }
+                    else {
+                        // Nothing
+                    }
+                }).catch(function(jqXHR) {
+                    // Nothing
+                });
+            });
+            $("#textChestplate").keyup(function(e) {
+                if (e.key === "Enter")
+                    $("#searchChestplate").click();
+            })
+            $("#searchChestplate").click(function() {
+                getEquipmentByTypeAndNameLike("CHESTPLATE", $("#textChestplate").val()).then(function(response) {
+                    if (response.success) {
+                        let equipment = response.data;
+                        let available = equipment.filter(function(item) {
+                            return item.name !== getChestplateData().name;
+                        });
+
+                        initAvailable($("#availableChestplate"), available);
+                    }
+                    else {
+                        // Nothing
+                    }
+                }).catch(function(jqXHR) {
+                    // Nothing
+                });
+            });
+            $("#textVambrace").keyup(function(e) {
+                if (e.key === "Enter")
+                    $("#searchVambrace").click();
+            })
+            $("#searchVambrace").click(function() {
+                getEquipmentByTypeAndNameLike("VAMBRACE", $("#textVambrace").val()).then(function(response) {
+                    if (response.success) {
+                        let equipment = response.data;
+                        let available = equipment.filter(function(item) {
+                            return item.name !== getVambraceData().name;
+                        });
+
+                        initAvailable($("#availableVambrace"), available);
+                    }
+                    else {
+                        // Nothing
+                    }
+                }).catch(function(jqXHR) {
+                    // Nothing
+                });
+            });
+            $("#textCuish").keyup(function(e) {
+                if (e.key === "Enter")
+                    $("#searchCuish").click();
+            })
+            $("#searchCuish").click(function() {
+                getEquipmentByTypeAndNameLike("CUISH", $("#textCuish").val()).then(function(response) {
+                    if (response.success) {
+                        let equipment = response.data;
+                        let available = equipment.filter(function(item) {
+                            return item.name !== getCuishData().name;
+                        });
+
+                        initAvailable($("#availableCuish"), available);
+                    }
+                    else {
+                        // Nothing
+                    }
+                }).catch(function(jqXHR) {
+                    // Nothing
+                });
+            });
+            $("#textMain").keyup(function(e) {
+                if (e.key === "Enter")
+                    $("#searchMain").click();
+            })
+            $("#searchMain").click(function() {
+                getEquipmentByTypeAndNameLike("MAIN", $("#textMain").val()).then(function(response) {
+                    if (response.success) {
+                        let equipment = response.data;
+                        let available = equipment.filter(function(item) {
+                            return item.name !== getMainData().name;
+                        });
+
+                        initAvailable($("#availableMain"), available);
+                    }
+                    else {
+                        // Nothing
+                    }
+                }).catch(function(jqXHR) {
+                    // Nothing
+                });
+            });
+            $("#textSub").keyup(function(e) {
+                if (e.key === "Enter")
+                    $("#searchSub").click();
+            })
+            $("#searchSub").click(function() {
+                getEquipmentByTypeAndNameLike("SUB", $("#textSub").val()).then(function(response) {
+                    if (response.success) {
+                        let equipment = response.data;
+                        let available = equipment.filter(function(item) {
+                            return item.name !== getSubData().name;
+                        });
+
+                        initAvailable($("#availableSub"), available);
+                    }
+                    else {
+                        // Nothing
+                    }
+                }).catch(function(jqXHR) {
+                    // Nothing
+                });
+            });
+            
+            // Update Equipment
+            $("#helmet").on("hidden.bs.modal", function () {
+                setAbilityChart(attack, health, defense, reaction, agile);
+            });
+            $("#chestplate").on("hidden.bs.modal", function () {
+                setAbilityChart(attack, health, defense, reaction, agile);
+            });
+            $("#vambrace").on("hidden.bs.modal", function () {
+                setAbilityChart(attack, health, defense, reaction, agile);
+            });
+            $("#cuish").on("hidden.bs.modal", function () {
+                setAbilityChart(attack, health, defense, reaction, agile);
+            });
+            $("#main").on("hidden.bs.modal", function () {
+                setAbilityChart(attack, health, defense, reaction, agile);
+            });
+            $("#sub").on("hidden.bs.modal", function () {
+                setAbilityChart(attack, health, defense, reaction, agile);
+            });
+
             // Window Load
+            import { updateEquipments } from "./ajax/status/updateCharacter.js"
             window.addEventListener("load", function(event) {
                 if (__id == "" || __name == "")
                     window.location.href = "index.html";
@@ -86,7 +433,18 @@
                 setStatus();
             });
             window.addEventListener("beforeunload", function(event) {
-                
+                updateEquipments(__id, 
+                    getHelmetData().name, getChestplateData().name, getVambraceData().name, getCuishData().name,
+                    getMainData().name, getSubData().name).then(function(response) {
+                    if (response.success) {
+                        // Nothing
+                    }
+                    else {
+                        console.log(response.message);
+                    }
+                }).catch(function(jqXHR) {
+                    console.log(jqXHR)
+                });
             });
         </script>
     </head>
@@ -141,10 +499,12 @@
                                     <span id="playerName"></span>
                                 </div>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" id="chart">
+                                <!--
                                 <canvas id="abilityChart">
-                                    <!-- Nothing -->
+                                    
                                 </canvas>
+                                -->
                             </div>
                             <div class="card-footer">
                                 <div>
@@ -174,7 +534,239 @@
                     </div>
                     
                     <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <!-- Nothing -->
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="card header-gradient" id="armorHelmet" style="height: 20vh;">
+                                    <!-- Nothing -->
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <!-- Nothing -->
+                            </div>
+                        </div>
+
+                        <div style="height: 2vh"></div>
                         
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="card header-gradient" id="weaponMain" style="height: 20vh;">
+                                    <!-- Nothing -->
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="card header-gradient" id="armorChestplate" style="height: 20vh;">
+                                    <!-- Nothing -->
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="card header-gradient" id="weaponSub" style="height: 20vh;">
+                                    <!-- Nothing -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="height: 2vh"></div>
+                        
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <!-- Nothing -->
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="card header-gradient" id="armorVambrace" style="height: 20vh;">
+                                    <!-- Nothing -->
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <!-- Nothing -->
+                            </div>
+                        </div>
+                        
+                        <div style="height: 2vh"></div>
+                        
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <!-- Nothing -->
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="card header-gradient" id="armorCuish" style="height: 20vh;">
+                                    <!-- Nothing -->
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <!-- Nothing -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Helmet -->
+                <div class="modal fade" id="helmet" tabindex="-1" aria-labelledby="helmet" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content modal-gradient">
+                            <!-- Enemy Header -->
+                            <div class="modal-header">
+                                <span class="modal-title">Helmet</span>
+                                <div class="input-group justify-content-end">
+                                    <input id="textHelmet" type="text">
+                                    <i id="searchHelmet" class="bi bi-search"></i>
+                                </div>
+                            </div>
+                            <!-- Enemy Body -->
+                            <div class="modal-body" id="helmetBody">
+                                <h5>Current</h5>
+                                <div id="currentHelmet">
+                                    <!-- Nothing -->
+                                </div>
+                                <br>
+                                <h5>Available</h5>
+                                <div id="availableHelmet">
+                                    <!-- Nothing -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Chestplate -->
+                <div class="modal fade" id="chestplate" tabindex="-1" aria-labelledby="chestplate" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content modal-gradient">
+                            <!-- Enemy Header -->
+                            <div class="modal-header">
+                                <span class="modal-title">Chestplate</span>
+                                <div class="input-group justify-content-end">
+                                    <input id="textChestplate" type="text">
+                                    <i id="searchChestplate" class="bi bi-search"></i>
+                                </div>
+                            </div>
+                            <!-- Enemy Body -->
+                            <div class="modal-body" id="chestplateBody">
+                                <h5>Current</h5>
+                                <div id="currentChestplate">
+                                    <!-- Nothing -->
+                                </div>
+                                <br>
+                                <h5>Available</h5>
+                                <div id="availableChestplate">
+                                    <!-- Nothing -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Vambrace -->
+                <div class="modal fade" id="vambrace" tabindex="-1" aria-labelledby="vambrace" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content modal-gradient">
+                            <!-- Enemy Header -->
+                            <div class="modal-header">
+                                <span class="modal-title">Vambrace</span>
+                                <div class="input-group justify-content-end">
+                                    <input id="textVambrace" type="text">
+                                    <i id="searchVambrace" class="bi bi-search"></i>
+                                </div>
+                            </div>
+                            <!-- Enemy Body -->
+                            <div class="modal-body" id="vambraceBody">
+                                <h5>Current</h5>
+                                <div id="currentVambrace">
+                                    <!-- Nothing -->
+                                </div>
+                                <br>
+                                <h5>Available</h5>
+                                <div id="availableVambrace">
+                                    <!-- Nothing -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Cuish -->
+                <div class="modal fade" id="cuish" tabindex="-1" aria-labelledby="cuish" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content modal-gradient">
+                            <!-- Enemy Header -->
+                            <div class="modal-header">
+                                <span class="modal-title">Cuish</span>
+                                <div class="input-group justify-content-end">
+                                    <input id="textCuish" type="text">
+                                    <i id="searchCuish" class="bi bi-search"></i>
+                                </div>
+                            </div>
+                            <!-- Enemy Body -->
+                            <div class="modal-body" id="cuishBody">
+                                <h5>Current</h5>
+                                <div id="currentCuish">
+                                    <!-- Nothing -->
+                                </div>
+                                <br>
+                                <h5>Available</h5>
+                                <div id="availableCuish">
+                                    <!-- Nothing -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Main -->
+                <div class="modal fade" id="main" tabindex="-1" aria-labelledby="main" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content modal-gradient">
+                            <!-- Enemy Header -->
+                            <div class="modal-header">
+                                <span class="modal-title">Main</span>
+                                <div class="input-group justify-content-end">
+                                    <input id="textMain" type="text">
+                                    <i id="searchMain" class="bi bi-search"></i>
+                                </div>
+                            </div>
+                            <!-- Enemy Body -->
+                            <div class="modal-body" id="mainBody">
+                                <h5>Current</h5>
+                                <div id="currentMain">
+                                    <!-- Nothing -->
+                                </div>
+                                <br>
+                                <h5>Available</h5>
+                                <div id="availableMain">
+                                    <!-- Nothing -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Sub -->
+                <div class="modal fade" id="sub" tabindex="-1" aria-labelledby="sub" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content modal-gradient">
+                            <!-- Enemy Header -->
+                            <div class="modal-header">
+                                <span class="modal-title">Sub</span>
+                                <div class="input-group justify-content-end">
+                                    <input id="textSub" type="text">
+                                    <i id="searchSub" class="bi bi-search"></i>
+                                </div>
+                            </div>
+                            <!-- Enemy Body -->
+                            <div class="modal-body" id="subBody">
+                                <h5>Current</h5>
+                                <div id="currentSub">
+                                    <!-- Nothing -->
+                                </div>
+                                <br>
+                                <h5>Available</h5>
+                                <div id="availableSub">
+                                    <!-- Nothing -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

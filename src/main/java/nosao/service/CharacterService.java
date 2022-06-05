@@ -1,6 +1,7 @@
 package nosao.service;
 
 import nosao.entity.Character;
+import nosao.entity.Equipments;
 import nosao.exception.NotFoundException;
 import nosao.exception.UnprocessableEntityException;
 import nosao.parameter.CharacterQueryParameter;
@@ -21,6 +22,7 @@ public class CharacterService {
 //        return repository.findAll();
 //    }
 
+    // Search
     public Character getCharacterById(String id) {
         return repository._findById(id);
     }
@@ -41,15 +43,21 @@ public class CharacterService {
         return repository.findByNameIncludeAbility(name);
     }
 
-//    public Character createCharacter(Character request) {
-//        Character character = new Character();
-//        character.setName(request.getName());
-//        character.setDescription(request.getDescription());
-//
-//        return repository.insert(character);
-//    }
+    // Insert
+    public Character createCharacter(String name) {
+        if (null != getCharacterByName(name))
+            return null;
+        else {
+            Character character = new Character();
 
-    public Character updateCharacter(String id, String description) {
+            character.setName(name);
+
+            return repository.insert(character);
+        }
+    }
+
+    // Update
+    public Character updateCharacterDescription(String id, String description) {
         Character character = getCharacterById(id);
 
         character.setDescription(description);
@@ -57,6 +65,15 @@ public class CharacterService {
         return repository.save(character);
     }
 
+    public Character updateCharacterEquipments(String id, Equipments equipments) {
+        Character character = getCharacterById(id);
+
+        character.setEquipments(equipments);
+
+        return repository.save(character);
+    }
+
+    // Delete
 //    public void deleteCharacter(String id) {
 //        repository.deleteById(id);
 //    }

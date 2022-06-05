@@ -27,12 +27,6 @@
                 background: -webkit-linear-gradient(270deg, rgba(16, 46, 102, 0.9)0%, rgba(135, 220, 233, 0.8)100%);
                 background: -o-linear-gradient(270deg, rgba(16, 46, 102, 0.9)0%, rgba(135, 220, 233, 0.8)100%);
             }
-            
-            h5 {
-                color: white;
-                font-family: "Lucida Console", Courier, monospace;
-                -webkit-text-stroke: 1px black;
-            }
 
             .card-header {
                 color: white;
@@ -65,25 +59,52 @@
 
             // Ability, Description, Equipment
             import { showAbilityGraph } from "./js/graph/showGraph.js";
-            import { getAbility, getDescription, getEquipments } from "./ajax/status/characterInfo.js"
+            import { getAbility, getDescription } from "./ajax/status/characterInfo.js"
+            import { getCharacterEquipmentInfo } from "./ajax/equipment/getEquipment.js"
+            import { initEquipments } from "./js/status/setEquipments.js"
             function setStatus() {
-                getAbility(__name).then(function(response) {
+                getCharacterEquipmentInfo(__name).then(function(response) {
                     if (response.success) {
-                        let ability = response.data;
+                        initEquipments(response.data.equipmentList);
 
-                        // Ability
-                        let attack = ability.attack;
-                        let health = ability.health;
-                        let defense = ability.defense;
-                        let reaction = ability.reaction;
-                        let agile = ability.agile;
-                        
-                        showAbilityGraph($("#abilityChart"), attack, health, defense, reaction, agile);
-                        $("#attack").html(attack);
-                        $("#health").html(health);
-                        $("#defense").html(defense);
-                        $("#reaction").html(reaction);
-                        $("#agile").html(agile);
+                        let bonusAttack = 0;
+                        let bonusHealth = 0;
+                        let bonusDefense = 0;
+                        let bonusReaction = 0;
+                        let bonusAgile = 0;
+
+                        for (let i = 0; i < response.data.equipmentList.length; i++) {
+                            bonusAttack += response.data.equipmentList[i].ability.attack;
+                            bonusHealth += response.data.equipmentList[i].ability.health;
+                            bonusDefense += response.data.equipmentList[i].ability.defense;
+                            bonusReaction += response.data.equipmentList[i].ability.reaction;
+                            bonusAgile += response.data.equipmentList[i].ability.agile;
+                        }
+
+                        getAbility(__name).then(function(response) {
+                            if (response.success) {
+                                let ability = response.data;
+
+                                // Ability
+                                let attack = ability.attack + bonusAttack;
+                                let health = ability.health + bonusHealth;
+                                let defense = ability.defense + bonusDefense;
+                                let reaction = ability.reaction + bonusReaction;
+                                let agile = ability.agile + bonusAgile;
+                                
+                                showAbilityGraph($("#abilityChart"), attack, health, defense, reaction, agile);
+                                $("#attack").html(attack);
+                                $("#health").html(health);
+                                $("#defense").html(defense);
+                                $("#reaction").html(reaction);
+                                $("#agile").html(agile);
+                            }
+                            else {
+                                location.href = "main.html";
+                            }
+                        }).catch(function(jqXHR) {
+                            location.href = "main.html";
+                        });
                     }
                     else {
                         location.href = "main.html";
@@ -105,61 +126,6 @@
                     location.href = "main.html";
                 });
 
-                getEquipments(__name).then(function(response) {
-                    if (response.success) {
-                        let equipments = response.data;
-
-                        let helmet = $("#armorHelmet");
-                        let chestplate = $("#armorChestplate");
-                        let vambrace = $("#armorVambrace");
-                        let cuish = $("#armorCuish");
-                        let main =$("#weaponMain");
-                        let sub = $("#weaponSub");
-
-                        helmet.empty();
-                        chestplate.empty();
-                        vambrace.empty();
-                        cuish.empty();
-                        main.empty();
-                        sub.empty();
-
-                        let cardHelmet = $('<div class="card-image"></div>');
-                        $('<img src="src/image/Main-Guild.png" class="card-img-top" style="height: 20.7vh;">').appendTo(cardHelmet);
-                        $('<div><h5>' + (equipments.armor.helmet == '' ? '(No Helmet)' : equipments.armor.helmet) + '</h5></div>').appendTo(cardHelmet);
-                        cardHelmet.appendTo(helmet);
-
-                        let cardChestplate = $('<div class="card-image"></div>');
-                        $('<img src="src/image/Main-Guild.png" class="card-img-top" style="height: 20.7vh;">').appendTo(cardChestplate);
-                        $('<div><h5>' + (equipments.armor.chestplate == '' ? '(No Chestplate)' : equipments.armor.chestplate) + '</h5></div>').appendTo(cardChestplate);
-                        cardChestplate.appendTo(chestplate);
-
-                        let cardVambrace = $('<div class="card-image"></div>');
-                        $('<img src="src/image/Main-Guild.png" class="card-img-top" style="height: 20.7vh;">').appendTo(cardVambrace);
-                        $('<div><h5>' + (equipments.armor.vambrace == '' ? '(No Vambrace)' : equipments.armor.vambrace) + '</h5></div>').appendTo(cardVambrace);
-                        cardVambrace.appendTo(vambrace);
-
-                        let cardCuish = $('<div class="card-image"></div>');
-                        $('<img src="src/image/Main-Guild.png" class="card-img-top" style="height: 20.7vh;">').appendTo(cardCuish);
-                        $('<div><h5>' + (equipments.armor.cuish == '' ? '(No Cuish)' : equipments.armor.cuish) + '</h5></div>').appendTo(cardCuish);
-                        cardCuish.appendTo(cuish);
-
-                        let cardMain = $('<div class="card-image"></div>');
-                        $('<img src="src/image/Main-Guild.png" class="card-img-top" style="height: 20.7vh;">').appendTo(cardMain);
-                        $('<div><h5>' + (equipments.weapon.main == '' ? '(No Main)' : equipments.weapon.main) + '</h5></div>').appendTo(cardMain);
-                        cardMain.appendTo(main);
-
-                        let cardSub = $('<div class="card-image"></div>');
-                        $('<img src="src/image/Main-Guild.png" class="card-img-top" style="height: 20.7vh;">').appendTo(cardSub);
-                        $('<div><h5>' + (equipments.weapon.sub == '' ? '(No Sub)' : equipments.weapon.sub) + '</h5></div>').appendTo(cardSub);
-                        cardSub.appendTo(sub);
-                    }
-                    else {
-                        //location.href = "main.html";
-                    }
-                }).catch(function(jqXHR) {
-                    console.log("error");
-                    //location.href = "main.html";
-                });
             }
 
             // Description Update

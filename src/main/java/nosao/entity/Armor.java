@@ -11,7 +11,7 @@ public class Armor {
     private String cuish;
 
     public Armor() {
-
+        this("", "", "", "");
     }
 
     public Armor(String helmet, String chestplate, String vambrace, String cuish) {

@@ -9,7 +9,7 @@ public class Weapon {
     private String sub;
 
     public Weapon() {
-
+        this("", "");
     }
 
     public Weapon(String main, String sub) {

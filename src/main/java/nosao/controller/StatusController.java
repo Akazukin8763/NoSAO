@@ -1,9 +1,7 @@
 package nosao.controller;
 
-import nosao.entity.Response;
+import nosao.entity.*;
 import nosao.entity.Character;
-import nosao.entity.Equipments;
-import nosao.entity.Ability;
 import nosao.service.CharacterService;
 
 import org.springframework.http.ResponseEntity;
@@ -58,12 +56,29 @@ public class StatusController {
     }
 
     @PostMapping("/updateCharacterDescription")
-    public ResponseEntity<Response<Object>> getCharactersAbilityByName(String id, String description) {
-        Character character = characterService.updateCharacter(id, description);
+    public ResponseEntity<Response<Object>> updateCharacterDescription(String id, String description) {
+        Character character = characterService.updateCharacterDescription(id, description);
 
         Response<Object> response;
         if (null == character)
-            response = new Response<>(null, false, "更新 Description 失敗");
+            response = new Response<>(null, false, "Update description failed");
+        else
+            response = new Response<>(null, true);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/updateCharacterEquipments")
+    public ResponseEntity<Response<Object>> updateCharacterEquipments(String id,
+                                                                      String helmet, String chestplate, String vambrace, String cuish,
+                                                                      String main, String sub) {
+        Character character = characterService.updateCharacterEquipments(id, new Equipments(
+                                                                                    new Armor(helmet, chestplate, vambrace, cuish),
+                                                                                    new Weapon(main, sub)));
+
+        Response<Object> response;
+        if (null == character)
+            response = new Response<>(null, false, "Update equipments failed");
         else
             response = new Response<>(null, true);
 

@@ -29,6 +29,19 @@ public class IndexController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<Response<Object>> createCharacter(String name) {
+        Character character = characterService.createCharacter(name);
+
+        Response<Object> response;
+        if (null == character)
+            response = new Response<>(null, false, "Duplicated name");
+        else
+            response = new Response<>(null, true);
+
+        return ResponseEntity.ok(response);
+    }
+
 }
 
 

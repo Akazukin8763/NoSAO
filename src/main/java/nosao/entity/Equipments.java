@@ -9,7 +9,7 @@ public class Equipments {
     private Weapon weapon;
 
     public Equipments() {
-
+        this(new Armor(), new Weapon());
     }
 
     public Equipments(Armor armor, Weapon weapon) {

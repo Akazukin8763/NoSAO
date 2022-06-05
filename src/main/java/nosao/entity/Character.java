@@ -13,7 +13,7 @@ public class Character {
     private Ability ability;
 
     public Character() {
-
+        this("", "", "", new Equipments(), new Ability());
     }
 
     public Character(String id,

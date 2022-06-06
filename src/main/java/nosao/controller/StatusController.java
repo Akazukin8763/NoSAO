@@ -16,15 +16,28 @@ public class StatusController {
     @Autowired
     private CharacterService characterService;
 
+    @PostMapping("/getCharacterId")
+    public ResponseEntity<Response<String>> getCharacterIdByName(String name) {
+        Character character = characterService.getCharacterIdByName(name);
+
+        Response<String> response;
+        if (null == character)
+            response = new Response<>(null, false, "Account not existed");
+        else
+            response = new Response<>(character.getId(), true);
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/getCharacterDescription")
-    public ResponseEntity<Response<String>> getCharactersDescriptionByName(String name) {
+    public ResponseEntity<Response<String>> getCharacterDescriptionByName(String name) {
         Character character = characterService.getCharacterDescriptionByName(name);
 
         Response<String> response;
         if (null == character)
             response = new Response<>(null, false, "Account not existed");
         else
-            response = new Response<>(character.getDescription(), true, "Account not existed");
+            response = new Response<>(character.getDescription(), true);
 
         return ResponseEntity.ok(response);
     }

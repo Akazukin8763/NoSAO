@@ -18,11 +18,11 @@ public class CharacterService {
     @Autowired
     private CharacterRepository repository;
 
-//    public List<Character> getCharacters(CharacterQueryParameter param) {
-//        return repository.findAll();
-//    }
-
     // Search
+    public List<Character> getCharacters() {
+        return repository.findAll();
+    }
+
     public Character getCharacterById(String id) {
         return repository._findById(id);
     }
@@ -30,6 +30,8 @@ public class CharacterService {
     public Character getCharacterByName(String name) {
         return repository.findByName(name);
     }
+
+    public Character getCharacterIdByName(String name) { return repository.findByNameIncludeId(name); }
 
     public Character getCharacterDescriptionByName(String name) {
         return repository.findByNameIncludeDescription(name);

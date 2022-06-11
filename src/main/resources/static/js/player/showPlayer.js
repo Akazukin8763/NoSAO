@@ -1,12 +1,12 @@
-import { ajax_getPlayerList } from "../ajax.js";
+import { getCharacters } from "../../ajax/player/characters.js";
 
 var players;
 var currentPage = 0;
 
 export function resetPlayer() {
-    ajax_getPlayerList().then(function(response) {
-        if (response.message.successed) {
-            players = response.playerList;
+    getCharacters().then(function(response) {
+        if (response.success) {
+            players = response.data;
 
             // Page
             let page = $("#pageSelect");
@@ -46,7 +46,7 @@ export function resetPlayer() {
             showPlayer();
         }
         else {
-
+            console.log(response.message);
         }
     }).catch(function(jqXHR) {
         console.log(jqXHR)
@@ -63,7 +63,7 @@ export function showPlayer(index = 0) {
         if (index * 14 + i < players.length) {
             $("#list-" + i).css("visibility", "visible");
 
-            $("#list-" + i).html("#" + players[index * 14 + i].ID + "　｜　" + players[index * 14 + i].name);
+            $("#list-" + i).html("#" + players[index * 14 + i].id + "　｜　" + players[index * 14 + i].name);
             $("#input-" + i).val(players[index * 14 + i].name);
         }
         else {

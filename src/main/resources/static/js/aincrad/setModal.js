@@ -1,3 +1,4 @@
+/*
 export function setModal() {
     // Modal Description
     $("#description").on("hidden.bs.modal", function () {
@@ -47,3 +48,4 @@ export function setModal() {
         $("#description").modal("show");
     })
 }
+*/

@@ -16,12 +16,12 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <title>MySAO</title>
+        <title>NoSAO</title>
 
         <style>
-            .Aincrad {
+            .Background {
                 height: 100vh;
-                background-image: url('src/image/Aincrad.png');
+                background-image: url('src/image/Worldtree.png');
                 background-size: cover;
             }
             .header-gradient {
@@ -72,39 +72,43 @@
             import { getCookie } from "./js/cookie.js";
             import * as ajax from "./js/ajax.js";
 
-            let __ID = getCookie("ID");
-            let __name = getCookie("username");
+            let __id = getCookie("id");
+            let __name = getCookie("name");
 
             // Logout
             $("#logout").click(function() {
                 let confirm = window.confirm("Once you logout, you will die.");
 
                 if (confirm) {
-                    ajax.ajax_deleteAccount().then(function(response) {
+                    window.confirm("暫時無法登出，保留按鈕而已");
+                    /*ajax.ajax_deleteAccount().then(function(response) {
                         if (response.message.successed)
                             location.href = "index.php";
                         else
                             alert("You can not logout!");
                     }).catch(function(jqXHR) {
                         alert("You can not logout!");
-                    });
+                    });*/
                 }
             });
 
             // Window Load
             window.addEventListener("load", function(event) {
+                if (__id == "" || __name == "")
+                    window.location.href = "index.html";
+
                 $("#currentUsername").html(__name);
             });
         </script>
     </head>
     <body>
-        <div class="Aincrad">
+        <div class="Background">
 
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark header-gradient">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="#">
                         <!-- <img src="https://imgur.com/FuZhgll.png" alt="" width="30" height="24"> -->
-                        MySAO
+                        NoSAO
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -113,19 +117,19 @@
                     <div class="collapse navbar-collapse" id="navbarToggler">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="main.php">Home</a>
+                                <a class="nav-link active" aria-current="page" href="main.html">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="status.php">Status</a>
+                                <a class="nav-link" href="status.html">Status</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="aincrad.php">Aincrad</a>
+                                <a class="nav-link" href="equipment.html">Equipment</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="guild.php">Guild</a>
+                                <a class="nav-link" href="guild.html">Guild</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="player.php">Player</a>
+                                <a class="nav-link" href="player.html">Player</a>
                             </li>
                         </ul>
                         <div class="justify-content-end" style="color: white;">
@@ -140,14 +144,14 @@
             <div class="container">
                 <br>
                 <div class="d-flex justify-content-center">
-                    <h2>Welcome to Sword Art Online !</h2>
+                    <h2>Welcome to ALfheim Online !</h2>
                 </div>
                     
                 <br>
                 <div class="row">
                     <div class="col-sm-6-13">
                         <div class="card" style="height: 30vh">
-                            <div class="card-image" onclick="location.href='status.php'">
+                            <div class="card-image" onclick="location.href='status.html'">
                                 <img src="src/image/Main-Status.png" class="card-img-top" style="height: 29.7vh;">
                                 <div>
                                     <h2>Status</h2>
@@ -158,7 +162,7 @@
                         <div style="height: 8vh"></div>
 
                         <div class="card" style="height: 30vh">
-                            <div class="card-image" onclick="location.href='guild.php'">
+                            <div class="card-image" onclick="location.href='guild.html'">
                                 <img src="src/image/Main-Guild.png" class="card-img-top" style="height: 29.7vh;">
                                 <div>
                                     <h2>Guild</h2>
@@ -171,10 +175,10 @@
 
                     <div class="col-sm-6-13">
                         <div class="card" style="height: 30vh">
-                            <div class="card-image" onclick="location.href='aincrad.php'">
-                                <img src="src/image/Main-Aincrad.png" class="card-img-top" style="height: 29.7vh;">
+                            <div class="card-image" onclick="location.href='equipment.html'">
+                                <img src="src/image/Main-Equipment.png" class="card-img-top" style="height: 29.7vh;">
                                 <div>
-                                    <h2>Aincrad</h2>
+                                    <h2>Equipment</h2>
                                 </div>
                             </div>
                         </div>
@@ -182,7 +186,7 @@
                         <div style="height: 8vh"></div>
 
                         <div class="card" style="height: 30vh">
-                            <div class="card-image" onclick="location.href='player.php'">
+                            <div class="card-image" onclick="location.href='player.html'">
                                 <img src="src/image/Main-Player.png" class="card-img-top" style="height: 29.7vh;">
                                 <div>
                                     <h2>Player</h2>

@@ -1,4 +1,6 @@
+/*
 import { showGraph } from "../ability/showGraph.js";
+import { ajax_getDescription, ajax_getAincradDetail } from "../ajax.js";
 
 export function showAincrad(index = 0) {
     let noName = "[No Name]";
@@ -182,40 +184,4 @@ export function showAincrad(index = 0) {
         console.log(jqXHR)
     });
 }
-
-function ajax_getDescription() {
-    return new Promise(function(resolve, reject) {
-        $.ajax({
-            type: "POST",
-            url: "API/Aincrad/getDescription.php",
-            dataType: "json",
-            data: {
-            },
-            success: function(response) {
-                resolve(response)
-            },
-            error: function(jqXHR) {
-                reject(jqXHR)
-            }
-        });
-    });
-}
-
-function ajax_getAincradDetail(__level) {
-    return new Promise(function(resolve, reject) {
-        $.ajax({
-            type: "POST",
-            url: "API/Aincrad/getAincradDetail.php",
-            dataType: "json",
-            data: {
-                level: __level
-            },
-            success: function(response) {
-                resolve(response)
-            },
-            error: function(jqXHR) {
-                reject(jqXHR)
-            }
-        });
-    });
-}
+*/

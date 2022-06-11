@@ -1,4 +1,4 @@
-import { linkOver } from "../start/linkOver.js";
+import { setCookie } from "../start/linkOver.js";
 
 // https://www.youtube.com/watch?v=kBQ6GMI5iiM
 export function linkStart() {
@@ -65,7 +65,6 @@ function loginMenu() {
             $("#loginERR").html("");
 
             var __name = $("#username").val();
-            
         
             $.ajax({
                 type: "POST",

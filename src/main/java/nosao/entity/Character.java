@@ -1,34 +1,48 @@
 package nosao.entity;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "character")
 public class Character {
 
-    private @Id String id;
+    private String id;
     private String name;
     private String description;
-    private Equipments equipments;
-    private Ability ability;
+    private String helmet;
+    private String chestplate;
+    private String vambrace;
+    private String cuish;
+    private String main;
+    private String sub;
+    private int health;
+    private int attack;
+    private int defense;
+    private int reaction;
+    private int agile;
 
     public Character() {
-        this("", "", "", new Equipments(), new Ability());
+
     }
 
     public Character(String id,
                      String name, String description,
-                     Equipments equipments, Ability ability) {
+                     String helmet, String chestplate, String vambrace, String cuish,
+                     String main, String sub,
+                     int health, int attack, int defense, int reaction, int agile) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.equipments = equipments;
-        this.ability = ability;
-    }
-
-    public String toString() {
-        return String.format("{ id: %s, name: %s, description: %s, equipments: %s, ability: %s }",
-                id, name, description, equipments, ability);
+        this.helmet = helmet;
+        this.chestplate = chestplate;
+        this.vambrace = vambrace;
+        this.cuish = cuish;
+        this.main = main;
+        this.sub = sub;
+        this.health = health;
+        this .attack = attack;
+        this.defense = defense;
+        this.reaction = reaction;
+        this.agile = agile;
     }
 
     public void setId(String id) {
@@ -50,20 +64,6 @@ public class Character {
     }
     public String getDescription() {
         return description;
-    }
-
-    public void setEquipments(Equipments equipments) {
-        this.equipments = equipments;
-    }
-    public Equipments getEquipments() {
-        return equipments;
-    }
-
-    public void setAbility(Ability ability) {
-        this.ability = ability;
-    }
-    public Ability getAbility() {
-        return ability;
     }
 
 }

@@ -1,4 +1,3 @@
-/*
 import { showGraph } from "../ability/showGraph.js";
 import { ajax_getDescription, ajax_getAincradDetail } from "../ajax.js";
 
@@ -184,4 +183,3 @@ export function showAincrad(index = 0) {
         console.log(jqXHR)
     });
 }
-*/

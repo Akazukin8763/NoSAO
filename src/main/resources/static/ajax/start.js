@@ -89,14 +89,14 @@ function loginMenu() {
                     name: __name
                 },
                 success: function(response) {
-                    if (response.success) {
-                        setCookie("id", response.data.id);
-                        setCookie("name", response.data.name);
+                    if (response.first.success) {
+                        setCookie("id", response.second.id);
+                        setCookie("name", response.second.name);
 
                         linkOver();
                     }
                     else {
-                        $("#loginERR").html(response.message);
+                        $("#loginERR").html(response.first.message);
                     }
                 },
                 error: function(jqXHR) {

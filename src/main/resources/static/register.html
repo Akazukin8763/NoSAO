@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Bootstrap CSS --><!-- CSS only -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <title>MySAO</title>
+
+        <style>
+            .slidecontainer {
+                width: 100%;
+            }
+
+            .imgSlider {
+                -webkit-appearance: none;
+                width: 100%;
+                height: 10px;
+                border-radius: 5px;
+                background: #d3d3d3;
+                outline: none;
+                opacity: 0.7;
+                -webkit-transition: .2s;
+                transition: opacity .2s;
+            }
+
+            .imgSlider:hover {
+                opacity: 1;
+            }
+
+            .imgSlider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 39px;
+                height: 63px;
+                border: 0;
+                background: url('src/image/face.png');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: contain;
+                cursor: pointer;
+            }
+
+            .imgSlider::-moz-range-thumb {
+                width: 39px;
+                height: 63px;
+                border: 0;
+                background: url('src/image/face.png');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: contain;
+                cursor: pointer;
+            }
+            .Aincrad {
+                height: 100vh;
+                background-image: url('src/image/Worldtree.png');
+                background-size: cover;
+            }
+            .login {
+                width: 35%;
+                background-color: rgb(4, 131, 191);
+                border: 4px rgb(111, 126, 141) solid;
+                border-radius: 16px;
+                color: white;
+                font-family: "Lucida Console", Courier, monospace;
+                letter-spacing: 1px;
+            }
+            .header-gradient {
+                background: linear-gradient(270deg, rgba(16, 46, 102, 0.9)0%, rgba(135, 220, 233, 0.8)100%);
+                background: -moz-linear-gradient(270deg, rgba(16, 46, 102, 0.9)0%, rgba(135, 220, 233, 0.8)100%);
+                background: -webkit-linear-gradient(270deg, rgba(16, 46, 102, 0.9)0%, rgba(135, 220, 233, 0.8)100%);
+                background: -o-linear-gradient(270deg, rgba(16, 46, 102, 0.9)0%, rgba(135, 220, 233, 0.8)100%);
+            }
+            .modal-header {
+                color: #EEEEEE;
+                font-weight: bold;
+            }
+            .modal-body {
+                color: #EEEEEE;
+            }
+            .modal-footer {
+                color: #EEEEEE;
+            }
+            .modal.fade .modal-dialog {
+                -webkit-transition: -webkit-transform 0.6s ease-out;
+                -moz-transition: moz-transform 0.6s ease-out;
+                -ms-transition: -ms-transform 0.6s ease-out;
+                -o-transition: -o-transform 0.6s ease-out;
+                transition: transform 0.6s ease-out;    
+            }
+            .form-control:focus {
+                border-color: rgba(135, 220, 233, 0.95);
+                box-shadow: 0 0 0 0.2rem rgba(16, 46, 102, 0.25);
+            }
+        </style>
+
+        <script type="module">
+            import { addNewCharacter } from "./ajax/register/register.js";
+            import { setCookie } from "./js/cookie.js";
+            import { getId } from "./ajax/status/characterInfo.js";
+            import { linkOver } from "./ajax/start.js";
+
+            function loginMenu() {
+                var main = $("#main");
+                main.css({ "background-color": "rgb(233, 236, 233)" });
+                main.empty();
+
+                // Login HTML
+                var login = $('<div class="login"></div>');
+                var div = $('<div class="row" style="padding: 5% 0%;"></div>')
+
+                var col1 = $('<div class="col-1"></div>');
+                col1.appendTo(div);
+
+                var col2 = $('<div class="col-5"></div>');
+                $('<h2>sign up_::</h2>').appendTo(col2);
+                $('<span id="loginERR" style="color: rgb(200, 0, 0);"></span>').appendTo(col2);
+                col2.appendTo(div);
+
+                var col3 = $('<div class="col-5"></div>');
+                $('<br>').appendTo(col3);
+                $('<label for="username" required="required">name:</label><a class="float-end" href="index.html">login</a>').appendTo(col3);
+                let username = $('<input type="text" class="form-control" id="username" name="username">').appendTo(col3);
+                $('<label for="health" required="required" style="padding-top: 5%;">health: </label><span id="outputhealth"> </span> +').appendTo(col3);
+                $('<input type="range" min="0" max="1500" step="1" value="300" class="imgSlider" id="health" name="health">').appendTo(col3);
+                
+                $('<label for="attack" required="required" style="padding-top: 5%;">attack: </label><span id="outputattack"> </span> +').appendTo(col3);
+                $('<input type="range" min="0" max="1500" step="1" value="300" class="imgSlider" id="attack" name="attack">').appendTo(col3);
+
+                $('<label for="defense" required="required" style="padding-top: 5%;">defense: </label><span id="outputdefense"> </span> +').appendTo(col3);
+                $('<input type="range" min="0" max="1500" step="1" value="300" class="imgSlider" id="defense" name="defense">').appendTo(col3);
+
+                $('<label for="reaction" required="required" style="padding-top: 5%;">reaction: </label><span id="outputreaction"> </span> +').appendTo(col3);
+                $('<input type="range" min="0" max="1500" step="1" value="300" class="imgSlider" id="reaction" name="reaction">').appendTo(col3);
+
+                $('<label for="agile" required="required" style="padding-top: 5%;">agile: </label><span id="outputagile"> </span> +').appendTo(col3);
+                $('<input type="range" min="0" max="1500" step="1" value="300" class="imgSlider" id="agile" name="agile">').appendTo(col3);
+
+                
+
+                col3.appendTo(div);
+
+                div.appendTo(login);
+                login.appendTo(main);
+
+// range slider script
+                var sliderhealth = document.getElementById("health");
+                var outputhealth = document.getElementById("outputhealth");
+                outputhealth.innerHTML = sliderhealth.value;
+
+                sliderhealth.oninput = function() {
+                    outputhealth.innerHTML = this.value;
+                }
+                var sliderattack = document.getElementById("attack");
+                var outputattack = document.getElementById("outputattack");
+                outputattack.innerHTML = sliderattack.value;
+
+                sliderattack.oninput = function() {
+                    outputattack.innerHTML = this.value;
+                }
+                var sliderdefense = document.getElementById("defense");
+                var outputdefense = document.getElementById("outputdefense");
+                outputdefense.innerHTML = sliderdefense.value;
+
+                sliderdefense.oninput = function() {
+                    outputdefense.innerHTML = this.value;
+                }
+                var sliderreaction = document.getElementById("reaction");
+                var outputreaction = document.getElementById("outputreaction");
+                outputreaction.innerHTML = sliderreaction.value;
+
+                sliderreaction.oninput = function() {
+                    outputreaction.innerHTML = this.value;
+                }
+                var slideragile = document.getElementById("agile");
+                var outputagile = document.getElementById("outputagile");
+                outputagile.innerHTML = slideragile.value;
+
+                slideragile.oninput = function() {
+                    outputagile.innerHTML = this.value;
+                }
+
+                // Login Func
+                username.keyup(function(e) {
+                    var code = e.key;
+                    var valERR = false;
+
+                    if (code === "Enter") {
+                        $("#loginERR").html("");
+
+                        var __name = $("#username").val();
+                        var __health = parseInt(sliderhealth.value);
+                        var __attack = parseInt(sliderattack.value);
+                        var __defense = parseInt(sliderdefense.value);
+                        var __reaction = parseInt(sliderreaction.value);
+                        var __agile = parseInt(slideragile.value);
+
+                        if(parseInt(sliderhealth.value) + parseInt(sliderattack.value) + parseInt(sliderdefense.value) + parseInt(sliderreaction.value) + parseInt(slideragile.value) > 1500){
+                            $("#loginERR").html("The sum of all values must be less than 1500!");
+                            valERR = true;
+                        }
+                        else{
+                            valERR = false;
+                        }
+                        if(!valERR){
+                            addNewCharacter(__name,__health,__attack,__defense,__reaction,__agile).then(function(response) {
+                            if (response.success) {
+                                getId(__name).then(function(response) {
+                                    if (response.success) {
+                                        setCookie("id", response.data.id);
+                                        setCookie("name", __name);
+
+                                        linkOver();
+                                    }
+                                    else {
+                                        
+                                    }
+                                }).catch(function(jqXHR) {
+                                    console.log(jqXHR);
+                                });
+                                
+                            }
+                            else {
+                                $("#loginERR").html(response.message);
+                            }
+                        }).catch(function(jqXHR) {
+                            $("#loginERR").html("ERROR CONNENTING...");
+                            console.log(jqXHR);
+                        });
+                        }
+                                            
+                    }
+                });
+                    
+            }
+            window.addEventListener("load",loginMenu,false);
+
+            
+        </script>
+    </head>
+    <body >
+        <div class="d-flex justify-content-center align-items-center Aincrad" id="main">
+            <!-- Modal Username -->
+            
+        </div>
+    </body>
+</html>

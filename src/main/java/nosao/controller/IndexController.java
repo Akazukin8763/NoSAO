@@ -1,10 +1,10 @@
 package nosao.controller;
 
-import nosao.entity.Status;
+import nosao.entity.Ability;
+import nosao.entity.Response;
 import nosao.entity.Character;
 import nosao.service.CharacterService;
 
-import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,27 @@ public class IndexController {
     private CharacterService characterService;
 
     @PostMapping("/login")
-    public ResponseEntity<Pair<Status, Character>> getCharactersByName(String name) {
+    public ResponseEntity<Response<Character>> getCharactersByName(String name) {
         Character character = characterService.getCharacterByName(name);
 
-        Pair<Status, Character> response;
+        Response<Character> response;
         if (null == character)
-            response = Pair.of(new Status(false, "Account not existed"), new Character());
+            response = new Response<>(null, false, "Account not existed");
         else
-            response = Pair.of(new Status(true), character);
+            response = new Response<>(character, true);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/registerCharacter")
+    public ResponseEntity<Response<Object>> createCharacter(String name, int health, int attack, int defense, int reaction, int agile) {
+        Character character = characterService.createCharacterWithAbility(name, health, attack, defense, reaction, agile);
+
+        Response<Object> response;
+        if (null == character)
+            response = new Response<>(null, false, "Duplicated name");
+        else
+            response = new Response<>(null, true);
 
         return ResponseEntity.ok(response);
     }

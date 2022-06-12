@@ -1,7 +1,6 @@
 package nosao.controller;
 
 import nosao.entity.Ability;
-import nosao.entity.Character;
 import nosao.entity.CharacterEquipmentInfo;
 import nosao.entity.Response;
 import nosao.entity.Equipment;

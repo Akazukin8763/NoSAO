@@ -1,6 +1,5 @@
 package nosao.controller;
 
-import nosao.entity.Ability;
 import nosao.entity.Response;
 import nosao.entity.Character;
 import nosao.service.CharacterService;
@@ -39,6 +38,15 @@ public class IndexController {
             response = new Response<>(null, false, "Duplicated name");
         else
             response = new Response<>(null, true);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/deleteCharacter")
+    public ResponseEntity<Response<Object>> deleteCharacter(String id) {
+        characterService.deleteCharacter(id);
+
+        Response<Object> response = new Response<>(null, true);
 
         return ResponseEntity.ok(response);
     }

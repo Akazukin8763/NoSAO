@@ -23,3 +23,7 @@ export function getCookie(cname) {
 
     return "";
 }
+
+export function eraseCookie(cname) {
+  document.cookie = cname + '=; Max-Age=0';
+}

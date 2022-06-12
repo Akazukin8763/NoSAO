@@ -69,8 +69,7 @@
         </style>
 
         <script type="module">
-            import { getCookie } from "./js/cookie.js";
-            import * as ajax from "./js/ajax.js";
+            import { getCookie, eraseCookie } from "./js/cookie.js";
 
             let __id = getCookie("id");
             let __name = getCookie("name");
@@ -80,15 +79,24 @@
                 let confirm = window.confirm("Once you logout, you will die.");
 
                 if (confirm) {
-                    window.confirm("暫時無法登出，保留按鈕而已");
-                    /*ajax.ajax_deleteAccount().then(function(response) {
-                        if (response.message.successed)
-                            location.href = "index.php";
-                        else
-                            alert("You can not logout!");
-                    }).catch(function(jqXHR) {
-                        alert("You can not logout!");
-                    });*/
+                    $.ajax({
+                        type: "POST",
+                        url: "/deleteCharacter",
+                        dataType: "json",
+                        data: {
+                            id: __id
+                        },
+                        success: function(response) {
+                            eraseCookie("id")
+                            eraseCookie("name")
+                            window.location.href = "index.html";
+                        },
+                        error: function(jqXHR) {
+                            eraseCookie("id")
+                            eraseCookie("name")
+                            window.location.href = "index.html";
+                        }
+                    })
                 }
             });
 
@@ -126,9 +134,6 @@
                                 <a class="nav-link" href="equipment.html">Equipment</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="guild.html">Guild</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" href="player.html">Player</a>
                             </li>
                         </ul>
@@ -144,7 +149,7 @@
             <div class="container">
                 <br>
                 <div class="d-flex justify-content-center">
-                    <h2>Welcome to ALfheim Online !</h2>
+                    <h2>Welcome to <s>Sword Art Online</s> !</h2>
                 </div>
                     
                 <br>
@@ -155,17 +160,6 @@
                                 <img src="src/image/Main-Status.png" class="card-img-top" style="height: 29.7vh;">
                                 <div>
                                     <h2>Status</h2>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="height: 8vh"></div>
-
-                        <div class="card" style="height: 30vh">
-                            <div class="card-image" onclick="location.href='guild.html'">
-                                <img src="src/image/Main-Guild.png" class="card-img-top" style="height: 29.7vh;">
-                                <div>
-                                    <h2>Guild</h2>
                                 </div>
                             </div>
                         </div>
@@ -182,9 +176,15 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div style="height: 8vh"></div>
+                <div style="height: 8vh"></div>
+                
+                <div class="row">
+                    <div class="col-sm-3_5-13"></div>
 
+                    <div class="col-sm-6-13">
                         <div class="card" style="height: 30vh">
                             <div class="card-image" onclick="location.href='player.html'">
                                 <img src="src/image/Main-Player.png" class="card-img-top" style="height: 29.7vh;">
@@ -194,6 +194,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-sm-3_5-13"></div>
                 </div>
 
                 <br>

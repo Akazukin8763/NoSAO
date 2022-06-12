@@ -1,8 +1,6 @@
 package nosao.service;
 
 import nosao.entity.Equipment;
-import nosao.exception.NotFoundException;
-import nosao.exception.UnprocessableEntityException;
 import nosao.repository.EquipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

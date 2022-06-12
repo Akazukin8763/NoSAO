@@ -216,7 +216,7 @@
                             if (response.success) {
                                 getId(__name).then(function(response) {
                                     if (response.success) {
-                                        setCookie("id", response.data.id);
+                                        setCookie("id", response.data);
                                         setCookie("name", __name);
 
                                         linkOver();

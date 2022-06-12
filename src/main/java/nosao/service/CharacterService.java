@@ -3,11 +3,7 @@ package nosao.service;
 import nosao.entity.Ability;
 import nosao.entity.Character;
 import nosao.entity.Equipments;
-import nosao.exception.NotFoundException;
-import nosao.exception.UnprocessableEntityException;
-import nosao.parameter.CharacterQueryParameter;
 import nosao.repository.CharacterRepository;
-import nosao.repository.MockCharacterDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -90,8 +86,8 @@ public class CharacterService {
     }
 
     // Delete
-//    public void deleteCharacter(String id) {
-//        repository.deleteById(id);
-//    }
+    public void deleteCharacter(String id) {
+        repository.deleteById(id);
+    }
 
 }
